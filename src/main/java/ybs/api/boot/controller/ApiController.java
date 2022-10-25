@@ -44,7 +44,7 @@ public class ApiController {
     @ResponseBody
     @RequestMapping("/getSche")
     public JSONObject getSche(@RequestBody HashMap<String, String> map) throws Exception{
-    	
+        
     	ParsingJSONUtil util = new ParsingJSONUtil();
         return util.parsingJSON(service.getSche(map));
 

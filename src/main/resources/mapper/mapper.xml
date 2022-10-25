@@ -1,8 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="EUC-KR"?>
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="ybs.api.boot.service.impl.ApiMapper">
+
+    <select id="getSttn" parameterType="Map" resultType="Map">
+        SELECT *
+        FROM
+            DRP_STTN
+        WHERE 1=1
+          AND RUN_AREA_CD= #{RUN_AREA_CD}
+          ORDER BY NODE_ID 
+    </select>
 
     <select id="getSche"  parameterType="Map" resultType="Map">
         SELECT
@@ -28,9 +37,40 @@
         FROM
             DRP_ROUTE_SCHE
         WHERE 1=1
-          AND SDATE = TO_DATE(#{sDate}, 'YYYYMMDD')
-          AND ST_TM LIKE #{stTm}||'%'
-          AND ROUTE_ID =  #{routeId}
+          AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
+          AND ST_TM LIKE #{ST_TM}||'%'
+          AND ROUTE_ID =  #{ROUTE_ID}
     </select>
+
+    <insert id="setUserMast" parameterType="map">
+        INSERT INTO DRP_USER_MAST VALUES
+            (
+                TO_DATE(#{REV_DATE}, 'YYYYMMDD'),
+                CONCAT(#{REV_TM},'0000'),
+                TO_DATE(#{SDATE}, 'YYYYMMDD'),
+                CONCAT(#{ST_TM}, '0000'),
+                #{AREA_NM},
+                #{AREA_CD},
+                #{RUN_AREA_NM},
+                #{RUN_AREA_CD},
+                #{RUN_ORDER},
+                #{ROUTE_ID},
+                #{ROUTE_NM},
+                #{ROUTE_NMA},
+                #{ROUTE_DIR},
+                #{PLAT_NUM},
+                #{STTN_IN_NM},
+                #{STTN_OUT_NM},
+                #{STTN_IN_ID},
+                #{STTN_OUT_ID},
+                #{MAX_SEAT},
+                #{TOTAL_DIST},
+                #{TOTLA_TM},
+                #{USER_CNT},
+                #{USER_NM},
+                #{USER_PHONE},
+                #{REV_TYPE}
+            )
+    </insert>
 
 </mapper>

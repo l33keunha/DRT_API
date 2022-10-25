@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>DRT API</title>
+    <link th:href="@{/css/main.css}" rel="stylesheet" />
+    <script type="text/javascript" th:src="@{/js/main.js}"></script>
+</head>
+<body>
+<form action="getData" method="post">
+    <table>
+        <tr>
+            <td>option</td>
+            <td><input type="text" name="option"  value="getSche" ></td>
+        </tr>
+        <tr>
+            <td>노선ID</td>
+            <td><input type="text" name="routeId" value="48421050"></td>
+        </tr>
+        <tr>
+            <td>출발정류장(노드ID)</td>
+            <td><input type="text" name="sttnInId" value="4895000002"></td>
+        </tr>
+        <tr>
+            <td>도착정류장(노드ID)</td>
+            <td><input type="text" name="sttnOutId" value="4895000008"></td>
+        </tr>
+        <tr>
+            <td>날짜</td>
+            <td><input type="text" name="sDate" value="202221024"></td>
+        </tr>
+        <tr>
+            <td>시간</td>
+            <td><input type="text" name="stTm" value="11"></td>
+        </tr>
+        <tr>
+            <td>인원</td>
+            <td><input type="text" name="userCnt" value="2"></td>
+        </tr>
+    </table>
+    <input type="submit">
+</form>
+</body>
+</html>

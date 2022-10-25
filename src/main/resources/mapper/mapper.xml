@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ybs.api.boot.service.impl.ApiMapper">
+
+    <select id="getSche"  parameterType="Map" resultType="Map">
+        SELECT
+            SDATE
+             ,ST_TM
+             ,AREA_NM
+             ,AREA_CD
+             ,RUN_AREA_NM
+             ,RUN_AREA_CD
+             ,RUN_ORDER
+             ,ROUTE_ID
+             ,ROUTE_NM
+             ,ROUTE_NMA
+             ,ROUTE_DIR
+             ,PLAT_NUM
+             ,DRIVER_NM
+             ,F_NODE_NM
+             ,T_NODE_NM
+             ,F_NODE_ID
+             ,T_NODE_ID
+             ,MAX_TT
+             ,MAX_USER
+        FROM
+            DRP_ROUTE_SCHE
+        WHERE 1=1
+          AND SDATE = TO_DATE(#{sDate}, 'YYYYMMDD')
+          AND ST_TM LIKE #{stTm}||'%'
+          AND ROUTE_ID =  #{routeId}
+    </select>
+
+</mapper>

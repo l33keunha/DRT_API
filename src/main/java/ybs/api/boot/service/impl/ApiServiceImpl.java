@@ -38,9 +38,7 @@ public class ApiServiceImpl implements ApiService {
      */
     @Override
     public List<HashMap<String,Object>> getSttn(HashMap<String, Object> map) {
-
         return mapper.getSttn(map);
-
     }
 
     /**
@@ -50,9 +48,7 @@ public class ApiServiceImpl implements ApiService {
      */
     @Override
     public HashMap<String, Object> getSche(HashMap<String, Object> map) {
-
         return mapper.getSche(map);
-
     }
 
     /**
@@ -62,19 +58,28 @@ public class ApiServiceImpl implements ApiService {
      */
     @Override
     public int setUserMast(HashMap<String, Object> map) {
-
          return mapper.setUserMast(map);
-
     }
 
     /**
      * 운전자가 운행할 차량의 예약자 조회
      * @param map
-     * @return map
+     * @return List<Map>
      */
     @Override
-    public void getUserMast(HashMap<String, Object> map) {
+    public List<HashMap<String, Object>> getUserMast(HashMap<String, Object> map) {
+        return mapper.getUserMast(map);
+    }
 
+    /**
+     * 운전자가 운행 종료 후 저장
+     * @param map
+     * @return int
+     * @throws Exception
+     */
+    @Override
+    public int setHist(HashMap<String, Object> map) {
+        return mapper.setHist(map);
     }
 
 }

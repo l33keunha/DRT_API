@@ -73,4 +73,40 @@
             )
     </insert>
 
+    <select id="getUserMast" parameterType="map" resultType="map">
+        SELECT *
+        FROM DRP_USER_MAST
+        WHERE 1=1
+          AND ROUTE_ID =  #{ROUTE_ID}
+          AND ROUTE_DIR = #{ROUTE_DIR}
+          AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
+          AND ST_TM LIKE #{ST_TM}||'%'
+    </select>
+
+    <insert id="setHist">
+        INSERT INTO DRP_ROUTE_HIST VALUES
+            (
+                TO_DATE(#{SDATE}, 'YYYYMMDD'),
+                CONCAT(#{ST_TM},'0000'),
+                #{AREA_NM},
+                #{AREA_CD},
+                #{RUN_AREA_NM},
+                #{RUN_AREA_CD},
+                #{RUN_ORDER},
+                #{ROUTE_ID},
+                #{ROUTE_NM},
+                #{ROUTE_NMA},
+                #{ROUTE_DIR},
+                #{PLAT_NUM},
+                #{DRIVER_NM},
+                #{F_NODE_NM},
+                #{T_NODE_NM},
+                #{F_NODE_ID},
+                #{T_NODE_ID},
+                #{TOTAL_DIST},
+                #{TOTAL_TM},
+                #{USER_CNT},
+                #{BOARDING_STATUS}
+            )
+    </insert>
 </mapper>

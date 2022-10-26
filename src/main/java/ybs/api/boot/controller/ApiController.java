@@ -10,10 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ybs.api.boot.service.ApiService;
 import ybs.api.boot.util.ParsingJSONUtil;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -53,7 +57,7 @@ public class ApiController {
     	return util.listParsingJSON(service.getSttn(map));
 
     }
-    
+
     /**
      * 이용자가 탑승 가능한 배차 정보 조회
      * @param map
@@ -66,6 +70,7 @@ public class ApiController {
 
         ParsingJSONUtil util = new ParsingJSONUtil();
         return util.mapParsingJSON(service.getSche(map));
+
     }
 
     /**
@@ -93,9 +98,26 @@ public class ApiController {
     @RequestMapping("/getUserMast")
     public JSONObject getUserMast(@RequestBody HashMap<String, Object> map) throws Exception{
 
-        service.getUserMast(map);
+        ParsingJSONUtil util = new ParsingJSONUtil();
+        return util.listParsingJSON(service.getUserMast(map));
 
-        return null;
     }
+
+    /**
+     * 운전자가 운행 종료 후 저장
+     * @param map
+     * @return JSON
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping("/setHist")
+    public JSONObject setHist(@RequestBody HashMap<String, Object> map) throws Exception{
+
+        ParsingJSONUtil util = new ParsingJSONUtil();
+        return util.resultParsingJSON(service.setHist(map));
+
+    }
+
+
 
 }

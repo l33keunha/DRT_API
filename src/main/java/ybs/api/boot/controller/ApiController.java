@@ -56,7 +56,6 @@ public class ApiController {
     	ParsingJSONUtil util = new ParsingJSONUtil();
     	return util.listParsingJSON(service.getSttn(map));
 
-    }
 
     /**
      * 이용자가 탑승 가능한 배차 정보 조회

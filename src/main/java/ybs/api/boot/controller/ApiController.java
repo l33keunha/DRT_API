@@ -51,11 +51,11 @@ public class ApiController {
      */
     @ResponseBody
     @RequestMapping("/getSttn")
-    public JSONObject getSttn(@RequestParam HashMap<String, Object> map) throws Exception{
+    public JSONObject getSttn(@RequestParam HashMap<String, Object> map) throws Exception {
 
-    	ParsingJSONUtil util = new ParsingJSONUtil();
-    	return util.listParsingJSON(service.getSttn(map));
-
+        ParsingJSONUtil util = new ParsingJSONUtil();
+        return util.listParsingJSON(service.getSttn(map));
+    }
 
     /**
      * 이용자가 탑승 가능한 배차 정보 조회

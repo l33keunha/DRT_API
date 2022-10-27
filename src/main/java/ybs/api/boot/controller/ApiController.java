@@ -44,6 +44,14 @@ public class ApiController {
     private ApiService service;
 
     /**
+     * index page 이동
+     */
+    @RequestMapping("/main.do")
+    public String goMain(HttpServletRequest req, HttpServletResponse res){
+        return "index";
+    }
+
+    /**
      * 이용자가 승/하차할 정류장 선택
      * @param map
      * @return JSON
@@ -55,6 +63,7 @@ public class ApiController {
 
         ParsingJSONUtil util = new ParsingJSONUtil();
         return util.listParsingJSON(service.getSttn(map));
+
     }
 
     /**

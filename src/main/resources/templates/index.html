@@ -3,42 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <title>DRT API</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <link th:href="@{/css/main.css}" rel="stylesheet" />
     <script type="text/javascript" th:src="@{/js/main.js}"></script>
 </head>
 <body>
-<form action="getData" method="post">
-    <table>
-        <tr>
-            <td>option</td>
-            <td><input type="text" name="option"  value="getSche" ></td>
-        </tr>
-        <tr>
-            <td>노선ID</td>
-            <td><input type="text" name="routeId" value="48421050"></td>
-        </tr>
-        <tr>
-            <td>출발정류장(노드ID)</td>
-            <td><input type="text" name="sttnInId" value="4895000002"></td>
-        </tr>
-        <tr>
-            <td>도착정류장(노드ID)</td>
-            <td><input type="text" name="sttnOutId" value="4895000008"></td>
-        </tr>
-        <tr>
-            <td>날짜</td>
-            <td><input type="text" name="sDate" value="202221024"></td>
-        </tr>
-        <tr>
-            <td>시간</td>
-            <td><input type="text" name="stTm" value="11"></td>
-        </tr>
-        <tr>
-            <td>인원</td>
-            <td><input type="text" name="userCnt" value="2"></td>
-        </tr>
-    </table>
-    <input type="submit">
-</form>
+    <div class="request-zone">
+        <div class="getSttn">
+            <form ic="getSttn" method="post">
+                <table>
+                    <tr>
+                        <td>RUN_AREA_CD</td>
+                        <td><input type="text" name="RUN_AREA_CD" placeholder="1"></td>
+                    </tr>
+                </table>
+                <input type="button" value="example">
+                <input type="button" class="getSttn" value="api호출" onclick="callApi(this)">
+            </form>
+        </div>
+        <div class="getSche">
+            <form id="getSche" method="post">
+                <table>
+                    <tr>
+                        <td>노선ID</td>
+                        <td><input type="text" name="ROUTE_ID" value="48421050"></td>
+                    </tr>
+                    <tr>
+                        <td>출발정류장(노드ID)</td>
+                        <td><input type="text" name="STTN_IN_ID" value="4895000002"></td>
+                    </tr>
+                    <tr>
+                        <td>도착정류장(노드ID)</td>
+                        <td><input type="text" name="STTN_OUT_ID" value="4895000008"></td>
+                    </tr>
+                    <tr>
+                        <td>날짜</td>
+                        <td><input type="text" name="SDATE" value="20221007"></td>
+                    </tr>
+                    <tr>
+                        <td>시간</td>
+                        <td><input type="text" name="ST_TM" value="13"></td>
+                    </tr>
+                    <tr>
+                        <td>인원</td>
+                        <td><input type="text" name="USER_CNT" value="2"></td>
+                    </tr>
+                </table>
+                <input type="button" value="example">
+                <input type="button" class="getSche" value="api호출" onclick="callApi(this)">
+            </form>
+        </div>
+    </div>
+    <div class="response-zone">
+        <textarea id = "res"></textarea>
+    </div>
 </body>
 </html>

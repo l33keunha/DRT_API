@@ -1,0 +1,9 @@
+
+.request-zone{
+    display: flex;
+}
+
+.response-zone{
+    border: 1px solid black;
+    height: 300px;
+}

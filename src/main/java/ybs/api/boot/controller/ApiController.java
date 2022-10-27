@@ -51,7 +51,7 @@ public class ApiController {
      */
     @ResponseBody
     @RequestMapping("/getSttn")
-    public JSONObject getSttn(@RequestBody HashMap<String, Object> map) throws Exception{
+    public JSONObject getSttn(@RequestParam HashMap<String, Object> map) throws Exception{
 
     	ParsingJSONUtil util = new ParsingJSONUtil();
     	return util.listParsingJSON(service.getSttn(map));
@@ -66,7 +66,7 @@ public class ApiController {
      */
     @ResponseBody
     @RequestMapping("/getSche")
-    public JSONObject getSche(@RequestBody HashMap<String, Object> map) throws Exception {
+    public JSONObject getSche(@RequestParam HashMap<String, Object> map) throws Exception {
 
         ParsingJSONUtil util = new ParsingJSONUtil();
         return util.mapParsingJSON(service.getSche(map));
@@ -81,7 +81,7 @@ public class ApiController {
      */
     @ResponseBody
     @RequestMapping("/setUserMast")
-    public JSONObject setUserMast(@RequestBody HashMap<String, Object> map) throws Exception{
+    public JSONObject setUserMast(@RequestParam HashMap<String, Object> map) throws Exception{
 
         ParsingJSONUtil util = new ParsingJSONUtil();
         return util.resultParsingJSON(service.setUserMast(map));
@@ -96,7 +96,7 @@ public class ApiController {
      */
     @ResponseBody
     @RequestMapping("/getUserMast")
-    public JSONObject getUserMast(@RequestBody HashMap<String, Object> map) throws Exception{
+    public JSONObject getUserMast(@RequestParam HashMap<String, Object> map) throws Exception{
 
         ParsingJSONUtil util = new ParsingJSONUtil();
         return util.listParsingJSON(service.getUserMast(map));
@@ -111,7 +111,7 @@ public class ApiController {
      */
     @ResponseBody
     @RequestMapping("/setHist")
-    public JSONObject setHist(@RequestBody HashMap<String, Object> map) throws Exception{
+    public JSONObject setHist(@RequestParam HashMap<String, Object> map) throws Exception{
 
         ParsingJSONUtil util = new ParsingJSONUtil();
         return util.resultParsingJSON(service.setHist(map));

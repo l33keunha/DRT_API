@@ -46,9 +46,9 @@
         INSERT INTO DRP_USER_MAST VALUES
             (
                 TO_DATE(#{REV_DATE}, 'YYYYMMDD'),
-                CONCAT(#{REV_TM},'0000'),
+                #{REV_TM},
                 TO_DATE(#{SDATE}, 'YYYYMMDD'),
-                CONCAT(#{ST_TM}, '0000'),
+                #{ST_TM},
                 #{AREA_NM},
                 #{AREA_CD},
                 #{RUN_AREA_NM},
@@ -83,11 +83,11 @@
           AND ST_TM LIKE #{ST_TM}||'%'
     </select>
 
-    <insert id="setHist">
+    <insert id="setHist" parameterType="map">
         INSERT INTO DRP_ROUTE_HIST VALUES
             (
                 TO_DATE(#{SDATE}, 'YYYYMMDD'),
-                CONCAT(#{ST_TM},'0000'),
+                #{ST_TM},
                 #{AREA_NM},
                 #{AREA_CD},
                 #{RUN_AREA_NM},

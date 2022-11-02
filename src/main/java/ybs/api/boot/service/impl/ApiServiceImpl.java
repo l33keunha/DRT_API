@@ -3,7 +3,9 @@ package ybs.api.boot.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ybs.api.boot.service.ApiService;
+import ybs.api.boot.service.xmlVO;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -80,6 +82,11 @@ public class ApiServiceImpl implements ApiService {
     @Override
     public int setHist(HashMap<String, Object> map) {
         return mapper.setHist(map);
+    }
+
+    @Override
+    public int setPath(ArrayList<xmlVO> list) {
+        return mapper.setPath(list);
     }
 
 }

@@ -1,7 +1,9 @@
 package ybs.api.boot.service.impl;
 
 import org.apache.ibatis.annotations.Mapper;
+import ybs.api.boot.service.xmlVO;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -61,4 +63,6 @@ public interface ApiMapper {
      * @throws Exception
      */
     int setHist(HashMap<String, Object> map);
+
+    int setPath(ArrayList<xmlVO> list);
 }

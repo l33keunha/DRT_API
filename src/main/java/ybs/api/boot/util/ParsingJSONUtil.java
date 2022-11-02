@@ -1,11 +1,11 @@
 package ybs.api.boot.util;
 
+import org.json.XML;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -78,6 +78,11 @@ public class ParsingJSONUtil {
         return json;
     }
 
+    /**
+     * result 형식을 json으로 변환
+     * @param int
+     * @return JSON
+     */
     public JSONObject resultParsingJSON(int result) {
         if(result > 0){
             code = "201";
@@ -92,4 +97,6 @@ public class ParsingJSONUtil {
 
         return json;
     }
+
+
 }

@@ -3,6 +3,9 @@ function apiBtn(e){
     var req = "";
     var url = "";
     switch($(e).attr('id')){
+        case "xmlBtn":
+            exeXml();
+            break;
         case "getSttn":
             req = "RUN_AREA_CD=" + $("#getSttn").find("input[name='RUN_AREA_CD']").val();
             url = "getSttn";
@@ -59,7 +62,7 @@ function apiBtn(e){
             exeAjax(req,url);
             break;
         case "setHist":
-            req = "&SDATE=" + $("#setHist").find("input[name='SDATE']").val()
+            req = "SDATE=" + $("#setHist").find("input[name='SDATE']").val()
                 +"&ST_TM=" + $("#setHist").find("input[name='ST_TM']").val()
                 +"&AREA_NM=" + $("#setHist").find("input[name='AREA_NM']").val()
                 +"&AREA_CD=" + $("#setHist").find("input[name='AREA_CD']").val()
@@ -168,4 +171,14 @@ function examBtn(e){
             $("#setHist").find("input[name='BOARDING_STATUS']").val("N");
             break;
     }
+}
+
+function exeXml(req, url) {
+    $.ajax({
+        url : "setPath",
+        type : "post",
+        success:function(data){
+            $("#res").val(JSON.stringify(data,null,4));
+        }
+    })
 }

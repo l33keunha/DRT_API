@@ -111,9 +111,29 @@
     </insert>
 
     <insert id="setPath" parameterType="ybs.api.boot.service.xmlVO">
-        INSERT INTO DRP_PATH(nodeType) VALUES
-        <foreach collection="list" item="vo" separator=",">
-                (#{vo.nodeType})
+        <foreach collection="list" item="vo" separator=" " open="INSERT ALL" close ="SELECT * FROM DUAL">
+            INTO DRP_PATH VALUES(
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                #{vo.index, jdbcType=INTEGER},
+                #{vo.name, jdbcType=VARCHAR},
+                #{vo.nodeType, jdbcType=VARCHAR},
+                #{vo.point, jdbcType=VARCHAR},
+                #{vo.lineString, jdbcType=VARCHAR},
+                #{vo.coordinates, jdbcType=VARCHAR},
+                #{vo.turnType, jdbcType=VARCHAR},
+                #{vo.pointIndex, jdbcType=INTEGER},
+                #{vo.pointType, jdbcType=VARCHAR},
+                #{vo.lineIndex, jdbcType=INTEGER},
+                #{vo.distance, jdbcType=INTEGER},
+                #{vo.time, jdbcType=INTEGER},
+                #{vo.roadType, jdbcType=VARCHAR},
+                #{vo.facilityType, jdbcType=VARCHAR},
+                #{vo.linkId, jdbcType=VARCHAR},
+                #{vo.costdstn, jdbcType=VARCHAR}
+            )
         </foreach>
     </insert>
 </mapper>

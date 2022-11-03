@@ -65,7 +65,7 @@
                 #{STTN_OUT_ID},
                 #{MAX_SEAT},
                 #{TOTAL_DIST},
-                #{TOTLA_TM},
+                #{TOTAL_TM},
                 #{USER_CNT},
                 #{USER_NM},
                 #{USER_PHONE},

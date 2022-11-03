@@ -110,28 +110,10 @@
             )
     </insert>
 
-    <insert id="setPath" parameterType="list">
-        INSERT INTO DRP_PATH VALUES
-        <foreach collection="list" item="list" separator=" , ">
-            (
-            NULL, NULL, NULL, NULL,
-            #{list.index},
-            #{list.name},
-            #{list.nodeType},
-            #{list.point},
-            #{list.lineString},
-            #{list.coordinates},
-            #{list.turnType},
-            #{list.pointIndex},
-            #{list.pointType},
-            #{list.lineIndex},
-            #{list.distance},
-            #{list.time},
-            #{list.roadType},
-            #{list.facilityType},
-            #{list.linkId},
-            #{list.costdstn}
-            )
+    <insert id="setPath" parameterType="ybs.api.boot.service.xmlVO">
+        INSERT INTO DRP_PATH(nodeType) VALUES
+        <foreach collection="list" item="vo" separator=",">
+                (#{vo.nodeType})
         </foreach>
     </insert>
 </mapper>

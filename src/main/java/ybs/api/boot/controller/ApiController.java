@@ -24,10 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import static org.apache.naming.SelectorContext.prefix;
 
@@ -159,7 +155,7 @@ public class ApiController {
 
         ParsingHashMapUtil util = new ParsingHashMapUtil();
         ArrayList<xmlVO> list = util.xmlParsingJson(file);
-
+        System.out.println(list.toString());
         int result = service.setPath(list);
         System.out.println(list.toString());
         System.out.println(result);

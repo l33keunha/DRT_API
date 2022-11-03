@@ -4,6 +4,13 @@ spring:
     url: jdbc:oracle:thin:@192.168.0.51:1521/ORCL
     username: drt
     password: drt123
+  thymeleaf:
+    cache: false
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
@@ -16,3 +23,4 @@ mybatis:
 server:
   tomcat:
     additional-tld-skip-patterns:  "*.jar"
+

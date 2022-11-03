@@ -1,5 +1,6 @@
 package ybs.api.boot.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -41,4 +42,6 @@ public interface ApiService {
      * @throws Exception
      */
     int setHist(HashMap<String, Object> map);
+
+    int setPath(ArrayList<xmlVO> list);
 }

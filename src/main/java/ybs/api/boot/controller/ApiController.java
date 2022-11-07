@@ -144,7 +144,7 @@ public class ApiController {
     public JSONObject setLog(HttpServletRequest rsq
                              ,@RequestParam HashMap<String, Document> map) throws Exception {
 
-        Path path = Paths.get("D:/DRT_API-workspace/DRT_API/src/main/resources/static/xml/sample.xml");
+        Path path = Paths.get("D:\\STSworkspace\\DRT_API\\src\\main\\resources\\static\\xml\\sample.xml");
         String file = Files.readString(path);
 
         /* 

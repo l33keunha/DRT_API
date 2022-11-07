@@ -52,7 +52,7 @@ function apiBtn(e){
                 +"&STTN_OUT_ID=" + $("#setUserMast").find("input[name='STTN_OUT_ID']").val()
                 +"&MAX_SEAT=" + $("#setUserMast").find("input[name='MAX_SEAT']").val()
                 +"&TOTAL_DIST=" + $("#setUserMast").find("input[name='TOTAL_DIST']").val()
-                +"&TOTLA_TM=" + $("#setUserMast").find("input[name='TOTLA_TM']").val()
+                +"&TOTAL_TM=" + $("#setUserMast").find("input[name='TOTLA_TM']").val()
                 +"&USER_CNT=" + $("#setUserMast").find("input[name='USER_CNT']").val()
                 +"&USER_NM=" + $("#setUserMast").find("input[name='USER_NM']").val()
                 +"&USER_PHONE=" + $("#setUserMast").find("input[name='USER_PHONE']").val()

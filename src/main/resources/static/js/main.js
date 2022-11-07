@@ -52,7 +52,7 @@ function apiBtn(e){
                 +"&STTN_OUT_ID=" + $("#setUserMast").find("input[name='STTN_OUT_ID']").val()
                 +"&MAX_SEAT=" + $("#setUserMast").find("input[name='MAX_SEAT']").val()
                 +"&TOTAL_DIST=" + $("#setUserMast").find("input[name='TOTAL_DIST']").val()
-                +"&TOTLA_TM=" + $("#setUserMast").find("input[name='TOTLA_TM']").val()
+                +"&TOTAL_TM=" + $("#setUserMast").find("input[name='TOTAL_TM']").val()
                 +"&USER_CNT=" + $("#setUserMast").find("input[name='USER_CNT']").val()
                 +"&USER_NM=" + $("#setUserMast").find("input[name='USER_NM']").val()
                 +"&USER_PHONE=" + $("#setUserMast").find("input[name='USER_PHONE']").val()
@@ -118,7 +118,7 @@ function examBtn(e){
             $("#getUserMast").find("input[name='ROUTE_ID']").val("48421050");
             $("#getUserMast").find("input[name='ROUTE_DIR']").val("1");
             $("#getUserMast").find("input[name='SDATE']").val("20221007");
-            $("#getUserMast").find("input[name='ST_TM']").val("130000");
+            $("#getUserMast").find("input[name='ST_TM']").val("140000");
             break;
         case "setUserMast":
             $("#setUserMast").find("input[name='REV_DATE']").val("20221007");
@@ -141,7 +141,7 @@ function examBtn(e){
             $("#setUserMast").find("input[name='STTN_OUT_ID']").val("7022");
             $("#setUserMast").find("input[name='MAX_SEAT']").val("16");
             $("#setUserMast").find("input[name='TOTAL_DIST']").val();
-            $("#setUserMast").find("input[name='TOTLA_TM']").val();
+            $("#setUserMast").find("input[name='TOTAL_TM']").val();
             $("#setUserMast").find("input[name='USER_CNT']").val("2");
             $("#setUserMast").find("input[name='USER_NM']").val("김다라");
             $("#setUserMast").find("input[name='USER_PHONE']").val("01011112222");

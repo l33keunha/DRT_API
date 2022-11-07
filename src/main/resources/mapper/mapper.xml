@@ -45,6 +45,7 @@
     <insert id="setUserMast" parameterType="map">
         INSERT INTO DRP_USER_MAST VALUES
             (
+                CONCAT(CONCAT(CONCAT(TO_CHAR(SYSDATE,'YYYYMMDD'), TO_CHAR(SYSDATE,'HH24MMSS')),'U'), LPAD(USER_NO.NEXTVAL,3,0)),
                 TO_DATE(#{REV_DATE}, 'YYYYMMDD'),
                 #{REV_TM},
                 TO_DATE(#{SDATE}, 'YYYYMMDD'),
@@ -113,7 +114,8 @@
     <insert id="setPath" parameterType="ybs.api.boot.service.xmlVO">
         <foreach collection="list" item="vo" separator=" " open="INSERT ALL" close ="SELECT * FROM DUAL">
             INTO DRP_PATH VALUES(
-                NULL,
+                CONCAT(CONCAT(CONCAT(TO_CHAR(SYSDATE,'YYYYMMDD'), TO_CHAR(SYSDATE,'HH24MMSS')),'S'), LPAD(SCHE_NO.NEXTVAL,3,0)),
+                1,
                 NULL,
                 NULL,
                 NULL,

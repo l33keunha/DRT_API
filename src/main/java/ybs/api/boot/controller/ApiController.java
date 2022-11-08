@@ -145,7 +145,8 @@ public class ApiController {
                              ,@RequestParam HashMap<String, Document> map) throws Exception {
 
         Path path = Paths.get("D:/DRT_API-workspace/DRT_API/src/main/resources/static/xml/sample.xml");
-        String file = Files.readString(path);
+        String file = null; 
+        		//Files.readString(path);
 
         /* 
             다른 util인 이유 : json.simple 과 json 라이브러리 호환 문제

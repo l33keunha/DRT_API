@@ -32,7 +32,7 @@
              ,T_NODE_NM
              ,F_NODE_ID
              ,T_NODE_ID
-             ,MAX_TT
+             ,MAX_TM
              ,MAX_USER
         FROM
             DRP_ROUTE_SCHE

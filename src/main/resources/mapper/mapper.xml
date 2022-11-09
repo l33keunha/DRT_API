@@ -32,7 +32,7 @@
              ,T_NODE_NM
              ,F_NODE_ID
              ,T_NODE_ID
-             ,MAX_TT
+             ,MAX_TM
              ,MAX_USER
         FROM
             DRP_ROUTE_SCHE
@@ -45,6 +45,7 @@
     <insert id="setUserMast" parameterType="map">
         INSERT INTO DRP_USER_MAST VALUES
             (
+                CONCAT(CONCAT(CONCAT(TO_CHAR(SYSDATE,'YYYYMMDD'), TO_CHAR(SYSDATE,'HH24MMSS')),'U'), LPAD(USER_NO.NEXTVAL,3,0)),
                 TO_DATE(#{REV_DATE}, 'YYYYMMDD'),
                 #{REV_TM},
                 TO_DATE(#{SDATE}, 'YYYYMMDD'),
@@ -111,9 +112,30 @@
     </insert>
 
     <insert id="setPath" parameterType="ybs.api.boot.service.xmlVO">
-        INSERT INTO DRP_PATH(nodeType) VALUES
-        <foreach collection="list" item="vo" separator=",">
-                (#{vo.nodeType})
+        <foreach collection="list" item="vo" separator=" " open="INSERT ALL" close ="SELECT * FROM DUAL">
+            INTO DRP_PATH VALUES(
+                CONCAT(CONCAT(CONCAT(TO_CHAR(SYSDATE,'YYYYMMDD'), TO_CHAR(SYSDATE,'HH24MMSS')),'S'), LPAD(SCHE_NO.NEXTVAL,3,0)),
+                1,
+                NULL,
+                NULL,
+                NULL,
+                #{vo.index, jdbcType=INTEGER},
+                #{vo.name, jdbcType=VARCHAR},
+                #{vo.nodeType, jdbcType=VARCHAR},
+                #{vo.point, jdbcType=VARCHAR},
+                #{vo.lineString, jdbcType=VARCHAR},
+                #{vo.coordinates, jdbcType=VARCHAR},
+                #{vo.turnType, jdbcType=VARCHAR},
+                #{vo.pointIndex, jdbcType=INTEGER},
+                #{vo.pointType, jdbcType=VARCHAR},
+                #{vo.lineIndex, jdbcType=INTEGER},
+                #{vo.distance, jdbcType=INTEGER},
+                #{vo.time, jdbcType=INTEGER},
+                #{vo.roadType, jdbcType=VARCHAR},
+                #{vo.facilityType, jdbcType=VARCHAR},
+                #{vo.linkId, jdbcType=VARCHAR},
+                #{vo.costdstn, jdbcType=VARCHAR}
+            )
         </foreach>
     </insert>
 </mapper>

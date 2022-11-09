@@ -173,12 +173,43 @@ function examBtn(e){
     }
 }
 
-function exeXml(req, url) {
-    $.ajax({
-        url : "setPath",
-        type : "post",
-        success:function(data){
-            $("#res").val(JSON.stringify(data,null,4));
+function exeXml() {
+   var input = document.createElement("input");
+
+   input.type = "file";
+   input.accept = "text/plain, text/html.jsp";
+
+   input.click();
+
+   input.onchange = function (event){
+       processFile(event.target.files[0]);
+   };
+
+    function processFile(file){
+        var reader = new FileReader();
+        reader.readAsText(file, "UTF-8");
+
+        reader.onload = function (e) {
+            var text = e.target.result;
+
+            parsingXml(text);
         }
-    })
+    }
+
+    function parsingXml(text){
+        var parseXML = new DOMParser();
+        var xmlDoc = parseXML.parseFromString(text, "text/xml");
+
+
+        $.ajax({
+            url : "setPath",
+            type : "post",
+            data : xmlDoc,
+            success:function(data){
+
+            }
+        })
+
+    }
+
 }

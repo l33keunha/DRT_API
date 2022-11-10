@@ -107,8 +107,7 @@
                 #{T_NODE_ID},
                 #{TOTAL_DIST},
                 #{TOTAL_TM},
-                #{USER_CNT},
-                #{BOARDING_STATUS}
+                #{USER_CNT}
             )
     </insert>
 

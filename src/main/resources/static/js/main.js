@@ -186,41 +186,26 @@ function exeXml() {
     };
 }
 
-    function processFile(file){
-        var reader = new FileReader();
-        reader.readAsText(file, "UTF-8");
+function processFile(file){
+    var reader = new FileReader();
+    reader.readAsText(file, "UTF-8");
 
-        reader.onload = function (e) {
-            var text = e.target.result;
+    reader.onload = function (e) {
+        var text = e.target.result;
 
-            //parsingXml(text);
-            console.log(typeof text);
+        //parsingXml(text);
+        console.log(typeof text);
 
-            $.ajax({
-                url : "setPath",
-                type : "post",
-                data : {"xmlDoc":text},
-                success:function(){
-
-                }
-            });
-        }
-    }
-
-    function parsingXml(text){
-        var parseXML = new DOMParser();
-        var xmlDoc = parseXML.parseFromString(text, "text/xml");
-        console.log(xmlDoc)
         $.ajax({
             url : "setPath",
             type : "post",
-            enctype: 'multipart/form-data',
-            contentType: false,
-            processData: false,
-            data : {"xmlDoc":xmlDoc},
+            data : {"xmlDoc":text},
             success:function(){
 
             }
         });
     }
+}
+
+
 

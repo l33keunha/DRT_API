@@ -87,6 +87,7 @@
     <insert id="setHist" parameterType="map">
         INSERT INTO DRP_ROUTE_HIST VALUES
             (
+                #{SCHE_NO},
                 TO_DATE(#{SDATE}, 'YYYYMMDD'),
                 #{ST_TM},
                 #{AREA_NM},

@@ -174,16 +174,17 @@ function examBtn(e){
 }
 
 function exeXml() {
-   var input = document.createElement("input");
+    var input = document.createElement("input");
 
-   input.type = "file";
-   input.accept = "text/plain, text/html.jsp";
+    input.type = "file";
+    input.accept = "text/plain, text/html.jsp";
 
-   input.click();
+    input.click();
 
-   input.onchange = function (event){
-       processFile(event.target.files[0]);
-   };
+    input.onchange = function (event) {
+        processFile(event.target.files[0]);
+    };
+}
 
     function processFile(file){
         var reader = new FileReader();
@@ -192,24 +193,34 @@ function exeXml() {
         reader.onload = function (e) {
             var text = e.target.result;
 
-            parsingXml(text);
+            //parsingXml(text);
+            console.log(typeof text);
+
+            $.ajax({
+                url : "setPath",
+                type : "post",
+                data : {"xmlDoc":text},
+                success:function(){
+
+                }
+            });
         }
     }
 
     function parsingXml(text){
         var parseXML = new DOMParser();
         var xmlDoc = parseXML.parseFromString(text, "text/xml");
-
-
+        console.log(xmlDoc)
         $.ajax({
             url : "setPath",
             type : "post",
-            data : xmlDoc,
-            success:function(data){
+            enctype: 'multipart/form-data',
+            contentType: false,
+            processData: false,
+            data : {"xmlDoc":xmlDoc},
+            success:function(){
 
             }
-        })
-
+        });
     }
 
-}

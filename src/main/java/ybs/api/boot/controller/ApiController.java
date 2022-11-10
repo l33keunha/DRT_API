@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 import ybs.api.boot.service.ApiService;
 import ybs.api.boot.service.xmlVO;
 import ybs.api.boot.util.ParsingJSONUtil;
@@ -22,6 +25,8 @@ import ybs.api.boot.util.ParsingHashMapUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
@@ -141,12 +146,7 @@ public class ApiController {
      */
     @ResponseBody
     @RequestMapping("/setPath")
-    public JSONObject setLog(HttpServletRequest rsq
-                             ,@RequestParam HashMap<String, Document> map) throws Exception {
-
-        Path path = Paths.get("D:/DRT_API-workspace/DRT_API/src/main/resources/static/xml/sample.xml");
-        String file = null; 
-        		//Files.readString(path);
+    public JSONObject setLog(@RequestParam HashMap<String, String> map) throws Exception {
 
         /* 
             다른 util인 이유 : json.simple 과 json 라이브러리 호환 문제
@@ -155,7 +155,7 @@ public class ApiController {
         */
 
         ParsingHashMapUtil util = new ParsingHashMapUtil();
-        ArrayList<xmlVO> list = util.xmlParsingJson(file);
+        ArrayList<xmlVO> list = util.xmlParsingJson(map.get("xmlDoc"));
         int result = service.setPath(list);
 
         return null;

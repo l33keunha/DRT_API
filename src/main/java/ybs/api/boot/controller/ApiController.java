@@ -64,7 +64,7 @@ public class ApiController {
     public String goMain(HttpServletRequest req, HttpServletResponse res){ return "index"; }
 
     /**
-     * 이용자가 승/하차할 정류장 선택
+     * 1. 운행지역 기준 정류장 정보 조회
      * @param map
      * @return JSON
      * @throws Exception
@@ -79,7 +79,7 @@ public class ApiController {
     }
 
     /**
-     * 이용자가 탑승 가능한 배차 정보 조회
+     * 2. 탑승 조건 기준 배차 정보 조회
      * @param map
      * @return JSON
      * @throws Exception
@@ -94,22 +94,7 @@ public class ApiController {
     }
 
     /**
-     * 예약자 등록
-     * @param map
-     * @return JSON
-     * @throws Exception
-     */
-    @ResponseBody
-    @RequestMapping("/setUserMast")
-    public JSONObject setUserMast(@RequestParam HashMap<String, Object> map) throws Exception{
-
-        ParsingJSONUtil util = new ParsingJSONUtil();
-        return util.resultParsingJSON(service.setUserMast(map));
-
-    }
-
-    /**
-     * 운전자가 운행할 차량의 예약자 조회
+     * 3. 운전자가 운행할 차량의 예약자 조회
      * @param map
      * @return JSON
      * @throws Exception
@@ -124,48 +109,25 @@ public class ApiController {
     }
 
     /**
-     * 운전자가 운행 종료 후 저장
+     * 4. 예약 정보 저장
      * @param map
      * @return JSON
      * @throws Exception
      */
     @ResponseBody
-    @RequestMapping("/setHist")
-    public JSONObject setHist(@RequestParam HashMap<String, Object> map) throws Exception{
+    @RequestMapping("/setUserMast")
+    public JSONObject setUserMast(@RequestParam HashMap<String, Object> map) throws Exception{
 
         ParsingJSONUtil util = new ParsingJSONUtil();
-        return util.resultParsingJSON(service.setHist(map));
+        return util.resultParsingJSON(service.setUserMast(map));
 
     }
 
     /**
-     * 운행정보 저장(사전예약 기준 경로탐색)
-     * @param
+     * 5. 노선정보 조회
      * @return JSON
      * @throws Exception
-     */
-    @ResponseBody
-    @RequestMapping("/setPath")
-    public JSONObject setLog(@RequestParam HashMap<String, String> map) throws Exception {
-
-        /* 
-            다른 util인 이유 : json.simple 과 json 라이브러리 호환 문제
-            json.simple => JSONObject, JSONArray 때 필요
-            json => xml 파싱 때 필요
-        */
-
-        ParsingHashMapUtil util = new ParsingHashMapUtil();
-        ArrayList<xmlVO> list = util.xmlParsingJson(map.get("xmlDoc"));
-        int result = service.setPath(list);
-
-        return null;
-
-    }  
-    
-    /**
-     * 노선정보 조회
-     * @return JSON
-     * @throws Exception
+     * 요청 사항 : 2022.11.09
      */
     @ResponseBody
     @RequestMapping("/getRoute")
@@ -177,10 +139,11 @@ public class ApiController {
     }
     
     /**
-     * 예약검색시 이름과 전화번호로 예약조회
+     * 6. 이름 / 연락처로 예약 조회
      * @param map
      * @return JSON
      * @throws Exception
+     * 요청 사항 : 2022.11.09
      */
     @ResponseBody
     @RequestMapping("/getUser")
@@ -190,6 +153,23 @@ public class ApiController {
         return util.listParsingJSON(service.getUser(map));
 
     }
+
+    /**
+     * 7. 운행 종료 후 운행 정보 저장
+     * @param map
+     * @return JSON
+     * @throws Exception
+     * 요청 사항 : 2022.11.09
+     */
+    @ResponseBody
+    @RequestMapping("/setHist")
+    public JSONObject setHist(@RequestParam HashMap<String, Object> map) throws Exception{
+
+        ParsingJSONUtil util = new ParsingJSONUtil();
+        return util.resultParsingJSON(service.setHist(map));
+
+    }
+
 
 }
 

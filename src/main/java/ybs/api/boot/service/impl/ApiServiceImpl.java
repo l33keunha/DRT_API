@@ -88,5 +88,24 @@ public class ApiServiceImpl implements ApiService {
     public int setPath(ArrayList<xmlVO> list) {
         return mapper.setPath(list);
     }
+    
+    /**
+     * 노선정보 조회
+     * @return List<Map>
+     */
+    @Override
+    public List<HashMap<String, Object>> getRoute() {
+        return mapper.getRoute();
+    }
+    
+    /**
+     * 예약검색시 이름과 전화번호로 예약조회 
+     * @param map
+     * @return List<Map>
+     */
+    @Override
+    public List<HashMap<String, Object>> getUser(HashMap<String, Object> map) {
+        return mapper.getUser(map);
+    }
 
 }

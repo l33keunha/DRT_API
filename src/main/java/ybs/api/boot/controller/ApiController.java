@@ -160,6 +160,39 @@ public class ApiController {
 
         return null;
 
+    }  
+    
+    /**
+     * 노선정보 조회
+     * @return JSON
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping("/getRoute")
+    public JSONObject getRoute() {
+    	
+    	ParsingJSONUtil util = new ParsingJSONUtil();
+        return util.listParsingJSON(service.getRoute());
+        	
+    }
+    
+    /**
+     * 예약검색시 이름과 전화번호로 예약조회
+     * @param map
+     * @return JSON
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping("/getUser")
+    public JSONObject getUser(@RequestParam HashMap<String, Object> map) throws Exception{
+
+    	System.out.println(map);
+        ParsingJSONUtil util = new ParsingJSONUtil();
+        
+        System.out.println(service.getUser(map));
+   
+        return util.listParsingJSON(service.getUser(map));
+
     }
 
 }

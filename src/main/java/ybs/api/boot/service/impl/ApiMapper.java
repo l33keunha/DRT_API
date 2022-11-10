@@ -65,4 +65,18 @@ public interface ApiMapper {
     int setHist(HashMap<String, Object> map);
 
     int setPath(ArrayList<xmlVO> list);
+    
+    /**
+     * 노선정보 조회
+     * @return List<Map>
+     */
+	List<HashMap<String, Object>> getRoute();
+	
+	/**
+     * 예약검색시 이름과 전화번호로 예약조회
+     * @param map
+     * @return List<Map>
+     */
+    List<HashMap<String, Object>> getUser(HashMap<String, Object> map);
+    
 }

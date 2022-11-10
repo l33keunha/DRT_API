@@ -138,4 +138,22 @@
             )
         </foreach>
     </insert>
+    
+    <select id="getRoute" resultType="map">
+       SELECT *
+       FROM
+       	DRP_ROUTE 
+	   ORDER BY ROUTE_ID
+    </select>
+    
+    <select id="getUser" parameterType="map" resultType="map">
+        SELECT *
+        FROM 
+        	DRP_USER_MAST
+        WHERE 1=1
+          AND USER_NM =  #{USER_NM}
+          AND USER_PHONE = #{USER_PHONE}
+          ORDER BY USER_NO  
+    </select>
+    
 </mapper>

@@ -34,7 +34,7 @@ public class ApiServiceImpl implements ApiService {
     private ApiMapper mapper;
 
     /**
-     * 이용자가 승/하차할 정류장 선택
+     * 1. 운행지역 기준 정류장 정보 조회
      * @param map
      * @return list<map>
      */
@@ -44,7 +44,7 @@ public class ApiServiceImpl implements ApiService {
     }
 
     /**
-     * 이용자가 탑승 가능한 배차 정보 조회
+     * 2. 탑승 조건 기준 배차 정보 조회
      * @param map
      * @return map
      */
@@ -54,17 +54,7 @@ public class ApiServiceImpl implements ApiService {
     }
 
     /**
-     * 예약자 등록
-     * @param map
-     * @return int
-     */
-    @Override
-    public int setUserMast(HashMap<String, Object> map) {
-         return mapper.setUserMast(map);
-    }
-
-    /**
-     * 운전자가 운행할 차량의 예약자 조회
+     * 3. 운전자가 운행할 차량의 예약자 조회
      * @param map
      * @return List<Map>
      */
@@ -74,7 +64,37 @@ public class ApiServiceImpl implements ApiService {
     }
 
     /**
-     * 운전자가 운행 종료 후 저장
+     * 4. 예약 정보 저장
+     * @param map
+     * @return int
+     */
+    @Override
+    public int setUserMast(HashMap<String, Object> map) {
+        return mapper.setUserMast(map);
+    }
+
+    /**
+     * 5. 노선정보 조회
+     * @return List<Map>
+     */
+    @Override
+    public List<HashMap<String, Object>> getRoute() {
+        return mapper.getRoute();
+    }
+
+    /**
+     * 6. 이름 / 연락처로 예약 조회
+     * @param map
+     * @return List<Map>
+     */
+    @Override
+    public List<HashMap<String, Object>> getUser(HashMap<String, Object> map) {
+        return mapper.getUser(map);
+    }
+
+
+    /**
+     * 7. 운행 종료 후 운행 정보 저장
      * @param map
      * @return int
      * @throws Exception
@@ -84,28 +104,33 @@ public class ApiServiceImpl implements ApiService {
         return mapper.setHist(map);
     }
 
-    @Override
-    public int setPath(ArrayList<xmlVO> list) {
-        return mapper.setPath(list);
-    }
-    
     /**
-     * 노선정보 조회
-     * @return List<Map>
-     */
-    @Override
-    public List<HashMap<String, Object>> getRoute() {
-        return mapper.getRoute();
-    }
-    
-    /**
-     * 예약검색시 이름과 전화번호로 예약조회 
+     * 8. 경로 탐색을 위한 출/도착지, 경유지의 xy 정보 제공
      * @param map
-     * @return List<Map>
+     * @return JSON
      */
     @Override
-    public List<HashMap<String, Object>> getUser(HashMap<String, Object> map) {
-        return mapper.getUser(map);
-    }
+    public List<HashMap<String, Object>> getForPath(HashMap<String, String> map) { return mapper.getForPath(map); }
+
+    /**
+     * 9. 경로 탐색 결과 값 저장 (xml -> db)
+     * @param map(String(xml))
+     * @return JSON
+     */
+    @Override
+    public int setPath(HashMap<String, String> map) { return mapper.setPath(map); }
+
+    /**
+     * 10. 배차 차량에 경로 제공
+     * @param map
+     * @return JSON
+     */
+    @Override
+    public List<HashMap<String, Object>> getForDriver(HashMap<String, String> map) { return mapper.getForDriver(map); }
+
+    
+
+    
+
 
 }

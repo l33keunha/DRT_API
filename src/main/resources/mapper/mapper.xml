@@ -42,7 +42,17 @@
           AND ROUTE_ID =  #{ROUTE_ID}
     </select>
 
-    <insert id="setUserMast" parameterType="map">
+    <select id="getUserMast" parameterType="Map" resultType="Map">
+        SELECT *
+        FROM DRP_USER_MAST
+        WHERE 1=1
+          AND ROUTE_ID =  #{ROUTE_ID}
+          AND ROUTE_DIR = #{ROUTE_DIR}
+          AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
+          AND ST_TM LIKE #{ST_TM}||'%'
+    </select>
+
+    <insert id="setUserMast" parameterType="Map">
         INSERT INTO DRP_USER_MAST VALUES
             (
                 CONCAT(CONCAT(CONCAT(TO_CHAR(SYSDATE,'YYYYMMDD'), TO_CHAR(SYSDATE,'HH24MMSS')),'U'), LPAD(USER_NO.NEXTVAL,3,0)),
@@ -74,17 +84,24 @@
             )
     </insert>
 
-    <select id="getUserMast" parameterType="map" resultType="map">
+    <select id="getRoute" resultType="Map">
         SELECT *
-        FROM DRP_USER_MAST
-        WHERE 1=1
-          AND ROUTE_ID =  #{ROUTE_ID}
-          AND ROUTE_DIR = #{ROUTE_DIR}
-          AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
-          AND ST_TM LIKE #{ST_TM}||'%'
+        FROM
+            DRP_ROUTE
+        ORDER BY ROUTE_ID
     </select>
 
-    <insert id="setHist" parameterType="map">
+    <select id="getUser" parameterType="Map" resultType="Map">
+        SELECT *
+        FROM
+            DRP_USER_MAST
+        WHERE 1=1
+          AND USER_NM =  #{USER_NM}
+          AND USER_PHONE = #{USER_PHONE}
+        ORDER BY USER_NO
+    </select>
+
+    <insert id="setHist" parameterType="Map">
         INSERT INTO DRP_ROUTE_HIST VALUES
             (
                 #{SCHE_NO},
@@ -110,6 +127,11 @@
                 #{USER_CNT}
             )
     </insert>
+
+    <select id="getForPath" parameterType="Map" resultType="Map">
+
+    </select>
+
 
     <insert id="setPath" parameterType="ybs.api.boot.service.xmlVO">
         <foreach collection="list" item="vo" separator=" " open="INSERT ALL" close ="SELECT * FROM DUAL">
@@ -138,22 +160,10 @@
             )
         </foreach>
     </insert>
-    
-    <select id="getRoute" resultType="map">
-       SELECT *
-       FROM
-       	DRP_ROUTE 
-	   ORDER BY ROUTE_ID
+
+    <select id="getForDriver" parameterType="Map" resultType="Map">
+
     </select>
-    
-    <select id="getUser" parameterType="map" resultType="map">
-        SELECT *
-        FROM 
-        	DRP_USER_MAST
-        WHERE 1=1
-          AND USER_NM =  #{USER_NM}
-          AND USER_PHONE = #{USER_PHONE}
-          ORDER BY USER_NO  
-    </select>
+
     
 </mapper>

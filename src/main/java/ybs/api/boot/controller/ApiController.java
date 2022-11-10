@@ -181,7 +181,8 @@ public class ApiController {
     @RequestMapping("/getForPath")
     public JSONObject getForPath(@RequestParam HashMap<String, String> map) throws Exception {
 
-        return null;
+        ParsingJSONUtil util = new ParsingJSONUtil();
+        return util.listParsingJSON(service.getForPath(map));
     }
 
     /**
@@ -195,7 +196,9 @@ public class ApiController {
     @RequestMapping("/setPath")
     public JSONObject setPath(@RequestParam HashMap<String, String> map) throws Exception {
 
-        return null;
+        ParsingJSONUtil util = new ParsingJSONUtil();
+        return util.resultParsingJSON(service.setPath(map));
+
     }
 
     /**
@@ -209,7 +212,9 @@ public class ApiController {
     @RequestMapping("/getForDriver")
     public JSONObject getForDriver(@RequestParam HashMap<String, String> map) throws Exception {
 
-        return null;
+        ParsingJSONUtil util = new ParsingJSONUtil();
+        return util.listParsingJSON(service.getForDriver(map));
+
     }
 
 }

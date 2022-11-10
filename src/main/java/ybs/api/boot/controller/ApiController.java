@@ -170,6 +170,47 @@ public class ApiController {
 
     }
 
+    /**
+     * 8. 경로 탐색을 위한 출/도착지, 경유지의 xy 정보 제공
+     * @param map
+     * @return JSON
+     * @throws Exception
+     * 추가 사항 : 2022.11.10
+     */
+    @ResponseBody
+    @RequestMapping("/getForPath")
+    public JSONObject getForPath(@RequestParam HashMap<String, String> map) throws Exception {
+
+        return null;
+    }
+
+    /**
+     * 9. 경로 탐색 결과 값 저장 (xml -> db)
+     * @param map(String(xml))
+     * @return JSON
+     * @throws Exception
+     * 추가 사항 : 2022.11.10
+     */
+    @ResponseBody
+    @RequestMapping("/setPath")
+    public JSONObject setPath(@RequestParam HashMap<String, String> map) throws Exception {
+
+        return null;
+    }
+
+    /**
+     * 10. 배차 차량에 경로 제공
+     * @param map
+     * @return JSON
+     * @throws Exception
+     * 추가 사항 : 2022.11.10
+     */
+    @ResponseBody
+    @RequestMapping("/getForDriver")
+    public JSONObject getForDriver(@RequestParam HashMap<String, String> map) throws Exception {
+
+        return null;
+    }
 
 }
 

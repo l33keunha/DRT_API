@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.w3c.dom.Document;
-
 public interface ApiService {
 
     /**
@@ -54,7 +52,7 @@ public interface ApiService {
      * @param map
      * @return int
      */
-    int setHist(HashMap<String, Object> map);
+    int updateHist(HashMap<String, Object> map);
 
     /**
      * 8. 경로 탐색을 위한 출/도착지, 경유지의 xy 정보 제공
@@ -65,10 +63,14 @@ public interface ApiService {
 
     /**
      * 9. 경로 탐색 결과 값 저장 (xml -> db)
-     * @param map(String(xml))
+     * @param scheNo 
+     * @param ArrayList<xmlVO>
      * @return JSON
      */
-    int setPath(HashMap<String, String> map);
+    int setPath(String scheNo, ArrayList<xmlVO> list);
+    String getScheNo(HashMap<String, String> map);
+    int setHist(HashMap<String, String> map);
+    int getScheSubNo(String scheNo);
 
     /**
      * 10. 배차 차량에 경로 제공
@@ -76,4 +78,7 @@ public interface ApiService {
      * @return JSON
      */
     List<HashMap<String, Object>> getForDriver(HashMap<String, String> map);
+
+
+	
 }

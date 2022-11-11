@@ -23,6 +23,7 @@ import ybs.api.boot.service.xmlVO;
 import ybs.api.boot.util.ParsingJSONUtil;
 import ybs.api.boot.util.ParsingHashMapUtil;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
@@ -162,16 +163,16 @@ public class ApiController {
      * 요청 사항 : 2022.11.09
      */
     @ResponseBody
-    @RequestMapping("/setHist")
-    public JSONObject setHist(@RequestParam HashMap<String, Object> map) throws Exception{
+    @RequestMapping("/updateHist")
+    public JSONObject updateHist(@RequestParam HashMap<String, Object> map) throws Exception{
 
         ParsingJSONUtil util = new ParsingJSONUtil();
-        return util.resultParsingJSON(service.setHist(map));
+        return util.resultParsingJSON(service.updateHist(map));
 
     }
 
     /**
-     * 8. 경로 탐색을 위한 출/도착지, 경유지의 xy 정보 제공
+     * 8. 경로 탐색을 위한 경유지만 x,y 정보 제공
      * @param map
      * @return JSON
      * @throws Exception
@@ -186,7 +187,7 @@ public class ApiController {
     }
 
     /**
-     * 9. 경로 탐색 결과 값 저장 (xml -> db)
+     * 9. 경로 탐색 결과 값 저장 (xml -> db) 하고 바로 10번 메소드 실행
      * @param map(String(xml))
      * @return JSON
      * @throws Exception
@@ -195,9 +196,37 @@ public class ApiController {
     @ResponseBody
     @RequestMapping("/setPath")
     public JSONObject setPath(@RequestParam HashMap<String, String> map) throws Exception {
+    	
+    	/* 
+		        다른 util인 이유 : json.simple 과 json 라이브러리 호환 문제
+		        json.simple => JSONObject, JSONArray 때 필요
+		        json => xml 파싱 때 필요
+    	 */
+    	ParsingHashMapUtil mUtil = new ParsingHashMapUtil();
+    	ArrayList<xmlVO> list = mUtil.xmlParsingJson(map.get("xmlDoc"));
+    	
+    	// 1. SCHE_NO 존재유무 확인 : 있으면 SUB_NO UPDATE, 없다면 NEW 운행 정보 
+    	String scheNo = null;
+    	int scheSubNo = 0;
+    	
+    	if(service.getScheNo(map) == null) {
+    		System.out.println("새로운 운행정보기에 NEW 운행정보");
+    		int result = service.setHist(map);
+    		if(result > 0) {
+    			scheNo = service.getScheNo(map);
+    			service.setPath(scheNo, list);
+    		}
+    	} else {
+    		System.out.println("원래 있던 운행정보기에 덮어쓰기");
+    		scheSubNo = service.getScheSubNo(scheNo);
+    	}
+    	
+    	System.out.println(scheNo);
+    	System.out.println(scheSubNo);
 
-        ParsingJSONUtil util = new ParsingJSONUtil();
-        return util.resultParsingJSON(service.setPath(map));
+//        ParsingJSONUtil util = new ParsingJSONUtil();
+//        util.resultParsingJSON(service.setPath(list));
+        return null;
 
     }
 
@@ -213,7 +242,8 @@ public class ApiController {
     public JSONObject getForDriver(@RequestParam HashMap<String, String> map) throws Exception {
 
         ParsingJSONUtil util = new ParsingJSONUtil();
-        return util.listParsingJSON(service.getForDriver(map));
+        System.out.println(util.listParsingJSON(service.getForDriver(map)));
+        return null;
 
     }
 

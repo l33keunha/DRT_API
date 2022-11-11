@@ -100,8 +100,8 @@ public class ApiServiceImpl implements ApiService {
      * @throws Exception
      */
     @Override
-    public int setHist(HashMap<String, Object> map) {
-        return mapper.setHist(map);
+    public int updateHist(HashMap<String, Object> map) {
+        return mapper.updateHist(map);
     }
 
     /**
@@ -114,11 +114,17 @@ public class ApiServiceImpl implements ApiService {
 
     /**
      * 9. 경로 탐색 결과 값 저장 (xml -> db)
-     * @param map(String(xml))
+     * @param ArrayList<xmlVO>
      * @return JSON
      */
     @Override
-    public int setPath(HashMap<String, String> map) { return mapper.setPath(map); }
+    public int setPath(String scheNo, ArrayList<xmlVO> list) { return mapper.setPath(scheNo, list); }
+	@Override
+	public String getScheNo(HashMap<String, String> map) {	return mapper.getScheNo(map); }
+	@Override
+	public int setHist(HashMap<String, String> map) { return mapper.setHist(map); }
+	@Override
+	public int getScheSubNo(String scheNo) { return mapper.getScheSubNo(scheNo); }
 
     /**
      * 10. 배차 차량에 경로 제공
@@ -127,6 +133,9 @@ public class ApiServiceImpl implements ApiService {
      */
     @Override
     public List<HashMap<String, Object>> getForDriver(HashMap<String, String> map) { return mapper.getForDriver(map); }
+
+
+
 
     
 

@@ -199,7 +199,14 @@ function processFile(file){
         $.ajax({
             url : "setPath",
             type : "post",
-            data : {"xmlDoc":text},
+            data : {"xmlDoc":text
+            			,"ROUTE_ID":"48421050"
+            			,"ROUTE_DIR":"1"
+            			,"SDATE":"20221007"
+            			,"ST_TM":"140000"
+            			,"FLAT_NUM":"경남11가 1111"
+            			,"DRIVER_NM":"홍길동1"
+            		},
             success:function(){
 
             }

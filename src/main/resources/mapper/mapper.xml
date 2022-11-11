@@ -101,7 +101,7 @@
         ORDER BY USER_NO
     </select>
 
-    <insert id="setHist" parameterType="Map">
+    <insert id="updateHist" parameterType="Map">
         INSERT INTO DRP_ROUTE_HIST VALUES
             (
                 #{SCHE_NO},
@@ -129,18 +129,170 @@
     </insert>
 
     <select id="getForPath" parameterType="Map" resultType="Map">
-
+        SELECT NODE_ID, STTN_X, STTN_Y, USER_IN_CNT, USER_OUT_CNT
+        FROM
+            (
+                SELECT STTN_ID, NVL(USER_IN_CNT, 0) USER_IN_CNT, NVL(USER_OUT_CNT, 0) USER_OUT_CNT
+                FROM
+                    (
+                        SELECT STTN_IN_ID STTN_ID, A.USER_CNT USER_IN_CNT, B.USER_CNT USER_OUT_CNT
+                        FROM
+                            (
+                                SELECT STTN_IN_ID, SUM(USER_CNT) USER_CNT
+                                FROM DRP_USER_MAST
+                                WHERE 1=1
+                                  AND ROUTE_ID =  #{ROUTE_ID}
+                                  AND ROUTE_DIR = #{ROUTE_DIR}
+                                  AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
+                                  AND ST_TM LIKE #{ST_TM}||'%'
+                                GROUP BY STTN_IN_ID
+                            ) A,
+                            (
+                                SELECT STTN_OUT_ID, SUM(USER_CNT) USER_CNT
+                                FROM DRP_USER_MAST
+                                GROUP BY STTN_OUT_ID
+                            ) B
+                        WHERE 1=1
+                          AND STTN_IN_ID = STTN_OUT_ID(+)
+                        UNION
+                        SELECT STTN_OUT_ID STTN_ID, A.USER_CNT USER_IN_CNT, B.USER_CNT USER_OUT_CNT
+                        FROM
+                            (
+                                SELECT STTN_IN_ID, SUM(USER_CNT) USER_CNT
+                                FROM DRP_USER_MAST
+                                GROUP BY STTN_IN_ID
+                            ) A,
+                            (
+                                SELECT STTN_OUT_ID, SUM(USER_CNT) USER_CNT
+                                FROM DRP_USER_MAST
+                                WHERE 1=1
+                                  AND ROUTE_ID =  #{ROUTE_ID}
+                                  AND ROUTE_DIR = #{ROUTE_DIR}
+                                  AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
+                                  AND ST_TM LIKE #{ST_TM}||'%'
+                                GROUP BY STTN_OUT_ID
+                            ) B
+                        WHERE 1=1
+                          AND STTN_IN_ID(+) = STTN_OUT_ID
+                    )
+            ) F1, DRP_STTN F2
+        WHERE 1=1
+          AND F1.STTN_ID = F2.STTN_ID
+        ORDER BY NODE_ID
     </select>
 
-
+	<select id="getScheNo" parameterType="Map" resultType="string">
+		SELECT SCHE_NO
+		FROM DRP_ROUTE_HIST
+		WHERE 1=1
+			AND ROUTE_ID =  #{ROUTE_ID}
+            AND ROUTE_DIR = #{ROUTE_DIR}
+            AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
+            AND ST_TM LIKE #{ST_TM}||'%'
+	</select>
+	
+	<insert id="setHist">
+		INSERT INTO DRP_ROUTE_HIST 
+		(
+			SCHE_NO
+			,SDATE
+			,ST_TM
+			,AREA_NM
+			,AREA_CD
+			,RUN_AREA_NM
+			,RUN_AREA_CD
+			,RUN_ORDER
+			,ROUTE_ID
+			,ROUTE_NM
+			,ROUTE_NMA
+			,ROUTE_DIR
+			,PLAT_NUM
+			,DRIVER_NM
+			,F_NODE_NM
+			,T_NODE_NM
+			,F_NODE_ID
+			,T_NODE_ID
+			,TOTAL_DIST
+			,TOTAL_TM
+			,USER_CNT
+		)
+		SELECT 
+			CONCAT(CONCAT(CONCAT(TO_CHAR(SYSDATE,'YYYYMMDD'), TO_CHAR(SYSDATE,'HH24MMSS')),'S'), LPAD(SCHE_NO.NEXTVAL,3,0))
+			,TO_DATE(#{SDATE}, 'YYYYMMDD') 
+			,#{ST_TM}
+			,AREA_NM
+			,AREA_CD
+			,RUN_AREA_NM
+			,RUN_AREA_CD
+			,ROUTE_DIR
+			,ROUTE_ID
+			,ROUTE_NM
+			,ROUTE_NMA
+			,ROUTE_DIR
+			,#{FLAT_NUM}
+			,#{DRIVER_NM}
+			,F_NODE_NM
+			,T_NODE_NM
+			,F_NODE_ID
+			,T_NODE_ID
+			,NULL 
+			,NULL
+			,NULL
+		FROM DRP_ROUTE 
+		WHERE 1=1
+			AND ROUTE_ID =  #{ROUTE_ID}
+            AND ROUTE_DIR = #{ROUTE_DIR}
+	</insert>
+	
+	<select id="getScheSubNo" parameterType="string" resultType="string">>
+		SELECT SCHE_SUB_NO
+		FROM
+		(
+			SELECT DISTINCT SCHE_SUB_NO 
+			FROM DRP_PATH 
+			WHERE 1=1
+				AND SCHE_NO = #{scheNo}
+			ORDER BY SCHE_SUB_NO DESC
+		)
+		WHERE ROWNUM = 1
+	</select>
+	
     <insert id="setPath" parameterType="ybs.api.boot.service.xmlVO">
+        <foreach collection="list" item="vo" separator=" " open="INSERT ALL" close ="SELECT * FROM DUAL">
+            INTO DRP_PATH VALUES(
+                #{scheNo},
+                1,
+                NULL,
+                #{vo.totalDist, jdbcType=INTEGER},
+                #{vo.totalTm, jdbcType=INTEGER},
+                #{vo.index, jdbcType=INTEGER},
+                #{vo.name, jdbcType=VARCHAR},
+                #{vo.nodeType, jdbcType=VARCHAR},
+                #{vo.point, jdbcType=VARCHAR},
+                #{vo.lineString, jdbcType=VARCHAR},
+                #{vo.coordinates, jdbcType=VARCHAR},
+                #{vo.turnType, jdbcType=VARCHAR},
+                #{vo.pointIndex, jdbcType=INTEGER},
+                #{vo.pointType, jdbcType=VARCHAR},
+                #{vo.lineIndex, jdbcType=INTEGER},
+                #{vo.distance, jdbcType=INTEGER},
+                #{vo.time, jdbcType=INTEGER},
+                #{vo.roadType, jdbcType=VARCHAR},
+                #{vo.facilityType, jdbcType=VARCHAR},
+                #{vo.linkId, jdbcType=VARCHAR},
+                #{vo.costdstn, jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+    
+    <insert id="setPathAdd" parameterType="ybs.api.boot.service.xmlVO">
         <foreach collection="list" item="vo" separator=" " open="INSERT ALL" close ="SELECT * FROM DUAL">
             INTO DRP_PATH VALUES(
                 CONCAT(CONCAT(CONCAT(TO_CHAR(SYSDATE,'YYYYMMDD'), TO_CHAR(SYSDATE,'HH24MMSS')),'S'), LPAD(SCHE_NO.NEXTVAL,3,0)),
                 1,
                 NULL,
-                NULL,
-                NULL,
+                #{vo.totalDist, jdbcType=INTEGER},
+                #{vo.totalTm, jdbcType=INTEGER},
                 #{vo.index, jdbcType=INTEGER},
                 #{vo.name, jdbcType=VARCHAR},
                 #{vo.nodeType, jdbcType=VARCHAR},
@@ -162,7 +314,11 @@
     </insert>
 
     <select id="getForDriver" parameterType="Map" resultType="Map">
-
+        SELECT *
+        FROM DRP_PATH
+        WHERE 1=1
+          AND SCHE_NO = #{SCHE_NO}
+        ORDER BY "INDEX"
     </select>
 
     

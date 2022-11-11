@@ -74,7 +74,7 @@ public interface ApiMapper {
      * @param map
      * @return int
      */
-    int setHist(HashMap<String, Object> map);
+    int updateHist(HashMap<String, Object> map);
 
     /**
      * 8. 경로 탐색을 위한 출/도착지, 경유지의 xy 정보 제공
@@ -88,7 +88,10 @@ public interface ApiMapper {
      * @param map(String(xml))
      * @return JSON
      */
-    int setPath(HashMap<String, String> map);
+    int setPath(String scheNo, ArrayList<xmlVO> list);
+    String getScheNo(HashMap<String, String> map);
+    int setHist(HashMap<String, String> map);
+    int getScheSubNo(String scheNo);
 
     /**
      * 10. 배차 차량에 경로 제공
@@ -96,4 +99,7 @@ public interface ApiMapper {
      * @return JSON
      */
     List<HashMap<String, Object>> getForDriver(HashMap<String, String> map);
+
+
+	
 }

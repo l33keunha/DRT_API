@@ -27,7 +27,10 @@ public class xmlVO {
 */
 
     private int scheNo;
-    private int resNo;
+    private int scheSubNo;
+    private String userNo;
+    private int totalDist;
+    private int totalTm;
     private int index;
     private String name;
     private String nodeType;

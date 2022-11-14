@@ -2,6 +2,11 @@ package ybs.api.boot.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import ybs.api.boot.service.ApiService;
 import ybs.api.boot.service.xmlVO;
-import ybs.api.boot.util.ParsingJSONUtil;
 import ybs.api.boot.util.ParsingHashMapUtil;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import ybs.api.boot.util.ParsingJSONUtil;
 
 
 /**
@@ -105,7 +107,7 @@ public class ApiController {
     public JSONObject setUserMast(@RequestParam HashMap<String, Object> map) throws Exception{
 
         ParsingJSONUtil util = new ParsingJSONUtil();
-        return util.resultParsingJSON(service.setUserMast(map));
+        return util.resultParsingJSON(service.setUserMast(map), 1);
 
     }
 
@@ -152,7 +154,7 @@ public class ApiController {
     public JSONObject updateHist(@RequestParam HashMap<String, Object> map) throws Exception{
 
         ParsingJSONUtil util = new ParsingJSONUtil();
-        return util.resultParsingJSON(service.updateHist(map));
+        return util.resultParsingJSON(service.updateHist(map), 2);
 
     }
 
@@ -183,6 +185,7 @@ public class ApiController {
     public JSONObject setPath(@RequestParam HashMap<String, String> map) throws Exception {
     	
     	/* 
+    	 		※ xml -> list 파싱
 		        다른 util인 이유 : json.simple 과 json 라이브러리 호환 문제
 		        json.simple => JSONObject, JSONArray 때 필요
 		        json => xml 파싱 때 필요
@@ -190,59 +193,77 @@ public class ApiController {
     	ParsingHashMapUtil mUtil = new ParsingHashMapUtil();
     	ArrayList<xmlVO> list = mUtil.xmlParsingJson(map.get("xmlDoc"));
 
-        // DB에 보낼 map 생성
+        /*
+         		 ※ DB에 보낼 map 생성
+         		 map          : request Parameter from web
+         		 map2db     : xml 데이터 list로 파싱한 parameter to db
+         */
         HashMap<String, Object> map2db = new HashMap<>();
     	
-    	// 1. SCHE_NO 존재유무 확인 : 있으면 SUB_NO UPDATE, 없다면 NEW 운행 정보 
+        /*
+         	 	※ if문 1. 필드
+         */
     	String scheNo = null;
     	int scheSubNo = 1;
         int result = 0;
+        ParsingJSONUtil util = new ParsingJSONUtil();
 
+        // SCHE_NO 존재유무 확인 : 있으면 SUB_NO UPDATE, 없다면 NEW 운행 정보 
     	if(service.getScheNo(map) == null) {
-    		int check = service.setHist(map);
+    		int check = service.setHist(map);				
     		if(check > 0) {
-                map2db.put("scheNo", service.getScheNo(map));
-                map2db.put("scheSubNo", "1");
+                map2db.put("SCHE_NO", service.getScheNo(map));
+                map2db.put("SCHE_SUB_NO", "1");
                 map2db.put("list", list);
 
                 result = service.setPath(map2db);
     		} else {
-                System.out.println("INSERT 실패 , 조건을 확인해주세요.");
+    			return util.resultParsingJSON(result, 1);
             }
     	} else {
             scheNo = service.getScheNo(map);
     		scheSubNo = service.getScheSubNo(scheNo);
             scheSubNo++;
 
-            map2db.put("scheNo", scheNo);
-            map2db.put("scheSubNo", scheSubNo);
+            map2db.put("SCHE_NO", scheNo);
+            map2db.put("SCHE_SUB_NO", scheSubNo);
             map2db.put("list", list);
 
             result = service.setPath(map2db);
     	}
-
-        ParsingJSONUtil util = new ParsingJSONUtil();
-        return util.resultParsingJSON(result);
-
+        /*
+				 ※ DB에 보낼 map 생성
+				 list         		 : xml -> list 파싱
+				 listFromdb     : db로부터 받아온 경로 List<Map<String, Object>>
+         */
+    	List<HashMap<String, Object>> listFromdb = new ArrayList<HashMap<String, Object>>();
+    	
+    	// 경로 저장 후 저장한 경로 다시 web으로 반환
+        if(result > 0){
+        	listFromdb = getForDriver(map2db.get("SCHE_NO"), map2db.get("SCHE_SUB_NO"));
+            return util.listFromdbParsingJSON(listFromdb);
+        }
+        	return util.resultParsingJSON(result, 3);
     }
 
     /**
      * 10. 배차 차량에 경로 제공
-     * @param map
-     * @return JSON
+     * @param Object
+     * @return listFromdb
      * @throws Exception
      * 추가 사항 : 2022.11.10
      */
     @ResponseBody
     @RequestMapping("/getForDriver")
-    public JSONObject getForDriver(@RequestParam HashMap<String, String> map) throws Exception {
+    public List<HashMap<String, Object>> getForDriver(Object scheNo, Object scheSubNo) throws Exception {
+    	HashMap<String, Object> map = new HashMap<String, Object>();
+    	map.put("SCHE_NO", scheNo);
+    	map.put("SCHE_SUB_NO", scheSubNo);
 
-        ParsingJSONUtil util = new ParsingJSONUtil();
-        System.out.println(util.listParsingJSON(service.getForDriver(map)));
-        return null;
-
+        return service.getForDriver(map);
     }
 
+    
 
 }
 

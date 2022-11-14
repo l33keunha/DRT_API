@@ -132,7 +132,7 @@ public class ApiServiceImpl implements ApiService {
      * @return JSON
      */
     @Override
-    public List<HashMap<String, Object>> getForDriver(HashMap<String, String> map) { return mapper.getForDriver(map); }
+    public List<HashMap<String, Object>> getForDriver(HashMap<String, Object> map) { return mapper.getForDriver(map); }
 
 
 

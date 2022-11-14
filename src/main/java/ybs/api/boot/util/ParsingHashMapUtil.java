@@ -39,6 +39,7 @@ public class ParsingHashMapUtil {
             vo.setIndex((int) obj.get("index"));
             vo.setName(String.valueOf(obj.get("name")));
             vo.setNodeType(String.valueOf(obj.get("nodeType")));
+
             if(i == 0 || i == array.length()-1){
                 vo.setTurnType(String.valueOf(obj.get("turnType")));
             } else if(i % 2 != 0 && i != array.length()-1){

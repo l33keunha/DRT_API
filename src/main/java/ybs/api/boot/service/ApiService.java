@@ -77,7 +77,7 @@ public interface ApiService {
      * @param map
      * @return JSON
      */
-    List<HashMap<String, Object>> getForDriver(HashMap<String, String> map);
+    List<HashMap<String, Object>> getForDriver(HashMap<String, Object> map);
 
 
 	

@@ -260,8 +260,8 @@
     <insert id="setPath" parameterType="ybs.api.boot.service.xmlVO">
         <foreach collection="list" item="vo" separator=" " open="INSERT ALL" close ="SELECT * FROM DUAL">
             INTO DRP_PATH VALUES(
-                #{scheNo},
-                #{scheSubNo},
+                #{SCHE_NO},
+                #{SCHE_SUB_NO},
                 NULL,
                 #{vo.totalDist, jdbcType=INTEGER},
                 #{vo.totalTm, jdbcType=INTEGER},
@@ -290,6 +290,7 @@
         FROM DRP_PATH
         WHERE 1=1
           AND SCHE_NO = #{SCHE_NO}
+          AND SCHE_SUB_NO = #{SCHE_SUB_NO}
         ORDER BY "INDEX"
     </select>
 

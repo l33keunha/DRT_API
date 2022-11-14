@@ -278,5 +278,12 @@
         ORDER BY "INDEX"
     </select>
 
-    
+    <select id="getHist" parameterType="Map" resultType="Map">
+        SELECT *
+        FROM DRP_ROUTE_HIST
+        WHERE 1=1
+          AND ROUTE_ID =  #{ROUTE_ID}
+          AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
+        ORDER BY ST_TM
+    </select>
 </mapper>

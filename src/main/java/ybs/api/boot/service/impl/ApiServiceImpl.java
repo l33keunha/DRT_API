@@ -134,12 +134,15 @@ public class ApiServiceImpl implements ApiService {
     @Override
     public List<HashMap<String, Object>> getPath(HashMap<String, Object> map) { return mapper.getPath(map); }
 
-
-
-
-    
-
-    
+    /**
+     * 11. 운행 요약 정보 조회
+     * @param map
+     * @return JSON
+     * @throws Exception
+     * 추가 사항 : 2022.11.14
+     */
+    @Override
+    public List<HashMap<String, Object>> getHist(HashMap<String, Object> map) { return mapper.getHist(map); }
 
 
 }

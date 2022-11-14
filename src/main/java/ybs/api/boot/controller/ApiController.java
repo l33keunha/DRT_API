@@ -249,7 +249,7 @@ public class ApiController {
     /**
      * 10. 배차 차량에 경로 제공
      * @param map
-     * @return listFromdb
+     * @return JSON
      * @throws Exception
      * 추가 사항 : 2022.11.10
      */
@@ -262,7 +262,21 @@ public class ApiController {
 
     }
 
-    
+    /**
+     * 11. 운행 요약 정보 조회
+     * @param map
+     * @return JSON
+     * @throws Exception
+     * 추가 사항 : 2022.11.14
+     */
+    @ResponseBody
+    @RequestMapping("/getHist")
+    public JSONObject getHist(@RequestParam HashMap<String, Object> map) throws Exception {
+
+        ParsingJSONUtil util = new ParsingJSONUtil();
+        return util.listParsingJSON(service.getHist(map));
+
+    }
 
 }
 

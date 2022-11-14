@@ -67,7 +67,7 @@ public interface ApiService {
      * @param ArrayList<xmlVO>
      * @return JSON
      */
-    int setPath(String scheNo, ArrayList<xmlVO> list);
+    int setPath(HashMap<String, Object> map2db);
     String getScheNo(HashMap<String, String> map);
     int setHist(HashMap<String, String> map);
     int getScheSubNo(String scheNo);

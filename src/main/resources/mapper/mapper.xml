@@ -244,7 +244,7 @@
             AND ROUTE_DIR = #{ROUTE_DIR}
 	</insert>
 	
-	<select id="getScheSubNo" parameterType="string" resultType="string">>
+	<select id="getScheSubNo" parameterType="string" resultType="integer">
 		SELECT SCHE_SUB_NO
 		FROM
 		(
@@ -261,7 +261,7 @@
         <foreach collection="list" item="vo" separator=" " open="INSERT ALL" close ="SELECT * FROM DUAL">
             INTO DRP_PATH VALUES(
                 #{scheNo},
-                1,
+                #{scheSubNo},
                 NULL,
                 #{vo.totalDist, jdbcType=INTEGER},
                 #{vo.totalTm, jdbcType=INTEGER},
@@ -285,34 +285,6 @@
         </foreach>
     </insert>
     
-    <insert id="setPathAdd" parameterType="ybs.api.boot.service.xmlVO">
-        <foreach collection="list" item="vo" separator=" " open="INSERT ALL" close ="SELECT * FROM DUAL">
-            INTO DRP_PATH VALUES(
-                CONCAT(CONCAT(CONCAT(TO_CHAR(SYSDATE,'YYYYMMDD'), TO_CHAR(SYSDATE,'HH24MMSS')),'S'), LPAD(SCHE_NO.NEXTVAL,3,0)),
-                1,
-                NULL,
-                #{vo.totalDist, jdbcType=INTEGER},
-                #{vo.totalTm, jdbcType=INTEGER},
-                #{vo.index, jdbcType=INTEGER},
-                #{vo.name, jdbcType=VARCHAR},
-                #{vo.nodeType, jdbcType=VARCHAR},
-                #{vo.point, jdbcType=VARCHAR},
-                #{vo.lineString, jdbcType=VARCHAR},
-                #{vo.coordinates, jdbcType=VARCHAR},
-                #{vo.turnType, jdbcType=VARCHAR},
-                #{vo.pointIndex, jdbcType=INTEGER},
-                #{vo.pointType, jdbcType=VARCHAR},
-                #{vo.lineIndex, jdbcType=INTEGER},
-                #{vo.distance, jdbcType=INTEGER},
-                #{vo.time, jdbcType=INTEGER},
-                #{vo.roadType, jdbcType=VARCHAR},
-                #{vo.facilityType, jdbcType=VARCHAR},
-                #{vo.linkId, jdbcType=VARCHAR},
-                #{vo.costdstn, jdbcType=VARCHAR}
-            )
-        </foreach>
-    </insert>
-
     <select id="getForDriver" parameterType="Map" resultType="Map">
         SELECT *
         FROM DRP_PATH

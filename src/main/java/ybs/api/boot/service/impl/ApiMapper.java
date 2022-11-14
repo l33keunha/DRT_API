@@ -88,7 +88,7 @@ public interface ApiMapper {
      * @param map(String(xml))
      * @return JSON
      */
-    int setPath(String scheNo, ArrayList<xmlVO> list);
+    int setPath(HashMap<String, Object> map2db);
     String getScheNo(HashMap<String, String> map);
     int setHist(HashMap<String, String> map);
     int getScheSubNo(String scheNo);

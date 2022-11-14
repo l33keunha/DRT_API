@@ -118,7 +118,7 @@ public class ApiServiceImpl implements ApiService {
      * @return JSON
      */
     @Override
-    public int setPath(String scheNo, ArrayList<xmlVO> list) { return mapper.setPath(scheNo, list); }
+    public int setPath(HashMap<String, Object> map2db) { return mapper.setPath(map2db); }
 	@Override
 	public String getScheNo(HashMap<String, String> map) {	return mapper.getScheNo(map); }
 	@Override

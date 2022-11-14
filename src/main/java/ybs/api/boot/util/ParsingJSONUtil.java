@@ -89,7 +89,7 @@ public class ParsingJSONUtil {
             msg = "success INSERT";
         } else{
             code = "401";
-            msg = "error. can't INSERT.";
+            msg = "error. check Parameter.";
         }
 
         json.put("returnCode", code);

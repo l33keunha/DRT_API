@@ -1,9 +1,5 @@
 package ybs.api.boot.controller;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -14,24 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 import ybs.api.boot.service.ApiService;
 import ybs.api.boot.service.xmlVO;
 import ybs.api.boot.util.ParsingJSONUtil;
 import ybs.api.boot.util.ParsingHashMapUtil;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
-
-import static org.apache.naming.SelectorContext.prefix;
 
 
 /**
@@ -204,29 +189,40 @@ public class ApiController {
     	 */
     	ParsingHashMapUtil mUtil = new ParsingHashMapUtil();
     	ArrayList<xmlVO> list = mUtil.xmlParsingJson(map.get("xmlDoc"));
+
+        // DB에 보낼 map 생성
+        HashMap<String, Object> map2db = new HashMap<>();
     	
     	// 1. SCHE_NO 존재유무 확인 : 있으면 SUB_NO UPDATE, 없다면 NEW 운행 정보 
     	String scheNo = null;
-    	int scheSubNo = 0;
-    	
-    	if(service.getScheNo(map) == null) {
-    		System.out.println("새로운 운행정보기에 NEW 운행정보");
-    		int result = service.setHist(map);
-    		if(result > 0) {
-    			scheNo = service.getScheNo(map);
-    			service.setPath(scheNo, list);
-    		}
-    	} else {
-    		System.out.println("원래 있던 운행정보기에 덮어쓰기");
-    		scheSubNo = service.getScheSubNo(scheNo);
-    	}
-    	
-    	System.out.println(scheNo);
-    	System.out.println(scheSubNo);
+    	int scheSubNo = 1;
+        int result = 0;
 
-//        ParsingJSONUtil util = new ParsingJSONUtil();
-//        util.resultParsingJSON(service.setPath(list));
-        return null;
+    	if(service.getScheNo(map) == null) {
+    		int check = service.setHist(map);
+    		if(check > 0) {
+                map2db.put("scheNo", service.getScheNo(map));
+                map2db.put("scheSubNo", "1");
+                map2db.put("list", list);
+
+                result = service.setPath(map2db);
+    		} else {
+                System.out.println("INSERT 실패 , 조건을 확인해주세요.");
+            }
+    	} else {
+            scheNo = service.getScheNo(map);
+    		scheSubNo = service.getScheSubNo(scheNo);
+            scheSubNo++;
+
+            map2db.put("scheNo", scheNo);
+            map2db.put("scheSubNo", scheSubNo);
+            map2db.put("list", list);
+
+            result = service.setPath(map2db);
+    	}
+
+        ParsingJSONUtil util = new ParsingJSONUtil();
+        return util.resultParsingJSON(result);
 
     }
 
@@ -246,6 +242,7 @@ public class ApiController {
         return null;
 
     }
+
 
 }
 

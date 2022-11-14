@@ -110,7 +110,7 @@ public class ApiServiceImpl implements ApiService {
      * @return JSON
      */
     @Override
-    public List<HashMap<String, Object>> getForPath(HashMap<String, String> map) { return mapper.getForPath(map); }
+    public List<HashMap<String, Object>> getWayPoint(HashMap<String, String> map) { return mapper.getWayPoint(map); }
 
     /**
      * 9. 경로 탐색 결과 값 저장 (xml -> db)
@@ -132,7 +132,7 @@ public class ApiServiceImpl implements ApiService {
      * @return JSON
      */
     @Override
-    public List<HashMap<String, Object>> getForDriver(HashMap<String, Object> map) { return mapper.getForDriver(map); }
+    public List<HashMap<String, Object>> getPath(HashMap<String, Object> map) { return mapper.getPath(map); }
 
 
 

@@ -59,7 +59,7 @@ public interface ApiService {
      * @param map
      * @return JSON
      */
-    List<HashMap<String, Object>> getForPath(HashMap<String, String> map);
+    List<HashMap<String, Object>> getWayPoint(HashMap<String, String> map);
 
     /**
      * 9. 경로 탐색 결과 값 저장 (xml -> db)
@@ -77,7 +77,7 @@ public interface ApiService {
      * @param map
      * @return JSON
      */
-    List<HashMap<String, Object>> getForDriver(HashMap<String, Object> map);
+    List<HashMap<String, Object>> getPath(HashMap<String, Object> map);
 
 
 	

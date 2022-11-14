@@ -166,11 +166,11 @@ public class ApiController {
      * 추가 사항 : 2022.11.10
      */
     @ResponseBody
-    @RequestMapping("/getForPath")
-    public JSONObject getForPath(@RequestParam HashMap<String, String> map) throws Exception {
+    @RequestMapping("/getWayPoint")
+    public JSONObject getWayPoint(@RequestParam HashMap<String, String> map) throws Exception {
 
         ParsingJSONUtil util = new ParsingJSONUtil();
-        return util.listParsingJSON(service.getForPath(map));
+        return util.listParsingJSON(service.getWayPoint(map));
     }
 
     /**
@@ -240,7 +240,7 @@ public class ApiController {
     	
     	// 경로 저장 후 저장한 경로 다시 web으로 반환
         if(result > 0){
-        	listFromdb = service.getForDriver(map2db);
+        	listFromdb = service.getPath(map2db);
             return util.listFromdbParsingJSON(listFromdb);
         }
         	return util.resultParsingJSON(result, 3);
@@ -254,11 +254,11 @@ public class ApiController {
      * 추가 사항 : 2022.11.10
      */
     @ResponseBody
-    @RequestMapping("/getForDriver")
-    public JSONObject getForDriver(@RequestParam HashMap<String, Object> map) throws Exception {
+    @RequestMapping("/getPath")
+    public JSONObject getPath(@RequestParam HashMap<String, Object> map) throws Exception {
 
         ParsingJSONUtil util = new ParsingJSONUtil();
-        return util.listFromdbParsingJSON(service.getForDriver(map));
+        return util.listFromdbParsingJSON(service.getPath(map));
 
     }
 

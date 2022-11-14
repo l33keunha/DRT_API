@@ -111,7 +111,7 @@
         WHERE SCHE_NO = #{SCHE_NO}
     </update>
 
-    <select id="getForPath" parameterType="Map" resultType="Map">
+    <select id="getWayPoint" parameterType="Map" resultType="Map">
         SELECT NODE_ID, STTN_X, STTN_Y, USER_IN_CNT, USER_OUT_CNT
         FROM
             (
@@ -269,7 +269,7 @@
         </foreach>
     </insert>
     
-    <select id="getForDriver" parameterType="Map" resultType="Map">
+    <select id="getPath" parameterType="Map" resultType="Map">
         SELECT *
         FROM DRP_PATH
         WHERE 1=1

@@ -15,10 +15,10 @@ public class ParsingHashMapUtil {
      * @param file
      * @return JSON
      */
-    public ArrayList<xmlVO> xmlParsingJson(String file) {
+    public ArrayList<xmlVO> xmlParsingJson(String xmlDoc) {
         
         // 파일 읽어오기
-        org.json.JSONObject json = XML.toJSONObject(file);
+        org.json.JSONObject json = XML.toJSONObject(xmlDoc);
         // first root 열기
         JSONObject content = (JSONObject) json.get("kml");
         // 실제 데이터들이 담겨있는 Document 열기
@@ -32,6 +32,9 @@ public class ParsingHashMapUtil {
         for(int i = 0; i < array.length(); i++){
             JSONObject obj = (JSONObject) array.get(i);
             vo = new xmlVO();
+
+            vo.setTotalDist((Integer) document.get("totalDistance"));
+            vo.setTotalTm((Integer) document.get("totalTime"));
 
             vo.setIndex((int) obj.get("index"));
             vo.setName(String.valueOf(obj.get("name")));
@@ -66,3 +69,4 @@ public class ParsingHashMapUtil {
 
     }
 }
+

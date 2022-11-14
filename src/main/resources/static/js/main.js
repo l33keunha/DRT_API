@@ -173,12 +173,45 @@ function examBtn(e){
     }
 }
 
-function exeXml(req, url) {
-    $.ajax({
-        url : "setPath",
-        type : "post",
-        success:function(data){
-            $("#res").val(JSON.stringify(data,null,4));
-        }
-    })
+function exeXml() {
+    var input = document.createElement("input");
+
+    input.type = "file";
+    input.accept = "text/plain, text/html.jsp";
+
+    input.click();
+
+    input.onchange = function (event) {
+        processFile(event.target.files[0]);
+    };
 }
+
+function processFile(file){
+    var reader = new FileReader();
+    reader.readAsText(file, "UTF-8");
+
+    reader.onload = function (e) {
+        var text = e.target.result;
+
+        //parsingXml(text);
+
+        $.ajax({
+            url : "setPath",
+            type : "post",
+            data : {"xmlDoc":text
+            			,"ROUTE_ID":"48421050"
+            			,"ROUTE_DIR":"2"
+            			,"SDATE":"20221007"
+            			,"ST_TM":"140000"
+            			,"FLAT_NUM":"경남11가 1111"
+            			,"DRIVER_NM":"홍길동1"
+            		},
+            success:function(data){
+                console.log(data);
+            }
+        });
+    }
+}
+
+
+

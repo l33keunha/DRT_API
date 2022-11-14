@@ -1,9 +1,5 @@
 package ybs.api.boot.controller;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -14,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import org.w3c.dom.Document;
 import ybs.api.boot.service.ApiService;
 import ybs.api.boot.service.xmlVO;
 import ybs.api.boot.util.ParsingJSONUtil;
@@ -22,10 +17,6 @@ import ybs.api.boot.util.ParsingHashMapUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
-
-import static org.apache.naming.SelectorContext.prefix;
 
 
 /**
@@ -59,7 +50,7 @@ public class ApiController {
     public String goMain(HttpServletRequest req, HttpServletResponse res){ return "index"; }
 
     /**
-     * 이용자가 승/하차할 정류장 선택
+     * 1. 운행지역 기준 정류장 정보 조회
      * @param map
      * @return JSON
      * @throws Exception
@@ -74,7 +65,7 @@ public class ApiController {
     }
 
     /**
-     * 이용자가 탑승 가능한 배차 정보 조회
+     * 2. 탑승 조건 기준 배차 정보 조회
      * @param map
      * @return JSON
      * @throws Exception
@@ -89,22 +80,7 @@ public class ApiController {
     }
 
     /**
-     * 예약자 등록
-     * @param map
-     * @return JSON
-     * @throws Exception
-     */
-    @ResponseBody
-    @RequestMapping("/setUserMast")
-    public JSONObject setUserMast(@RequestParam HashMap<String, Object> map) throws Exception{
-
-        ParsingJSONUtil util = new ParsingJSONUtil();
-        return util.resultParsingJSON(service.setUserMast(map));
-
-    }
-
-    /**
-     * 운전자가 운행할 차량의 예약자 조회
+     * 3. 운전자가 운행할 차량의 예약자 조회
      * @param map
      * @return JSON
      * @throws Exception
@@ -119,53 +95,25 @@ public class ApiController {
     }
 
     /**
-     * 운전자가 운행 종료 후 저장
+     * 4. 예약 정보 저장
      * @param map
      * @return JSON
      * @throws Exception
      */
     @ResponseBody
-    @RequestMapping("/setHist")
-    public JSONObject setHist(@RequestParam HashMap<String, Object> map) throws Exception{
+    @RequestMapping("/setUserMast")
+    public JSONObject setUserMast(@RequestParam HashMap<String, Object> map) throws Exception{
 
         ParsingJSONUtil util = new ParsingJSONUtil();
-        return util.resultParsingJSON(service.setHist(map));
+        return util.resultParsingJSON(service.setUserMast(map));
 
     }
 
     /**
-     * 운행정보 저장(사전예약 기준 경로탐색)
-     * @param
+     * 5. 노선정보 조회
      * @return JSON
      * @throws Exception
-     */
-    @ResponseBody
-    @RequestMapping("/setPath")
-    public JSONObject setLog(HttpServletRequest rsq
-                             ,@RequestParam HashMap<String, Document> map) throws Exception {
-
-        Path path = Paths.get("D:/DRT_API-workspace/DRT_API/src/main/resources/static/xml/sample.xml");
-        String file = null; 
-        		//Files.readString(path);
-
-        /* 
-            다른 util인 이유 : json.simple 과 json 라이브러리 호환 문제
-            json.simple => JSONObject, JSONArray 때 필요
-            json => xml 파싱 때 필요
-        */
-
-        ParsingHashMapUtil util = new ParsingHashMapUtil();
-        ArrayList<xmlVO> list = util.xmlParsingJson(file);
-        int result = service.setPath(list);
-
-        return null;
-
-    }  
-    
-    /**
-     * 노선정보 조회
-     * @return JSON
-     * @throws Exception
+     * 요청 사항 : 2022.11.09
      */
     @ResponseBody
     @RequestMapping("/getRoute")
@@ -177,19 +125,124 @@ public class ApiController {
     }
     
     /**
-     * 예약검색시 이름과 전화번호로 예약조회
+     * 6. 이름 / 연락처로 예약 조회
      * @param map
      * @return JSON
      * @throws Exception
+     * 요청 사항 : 2022.11.09
      */
     @ResponseBody
     @RequestMapping("/getUser")
     public JSONObject getUser(@RequestParam HashMap<String, Object> map) throws Exception{
 
-        ParsingJSONUtil util = new ParsingJSONUtil();   
+        ParsingJSONUtil util = new ParsingJSONUtil();
         return util.listParsingJSON(service.getUser(map));
 
     }
+
+    /**
+     * 7. 운행 종료 후 운행 정보 저장
+     * @param map
+     * @return JSON
+     * @throws Exception
+     * 요청 사항 : 2022.11.09
+     */
+    @ResponseBody
+    @RequestMapping("/updateHist")
+    public JSONObject updateHist(@RequestParam HashMap<String, Object> map) throws Exception{
+
+        ParsingJSONUtil util = new ParsingJSONUtil();
+        return util.resultParsingJSON(service.updateHist(map));
+
+    }
+
+    /**
+     * 8. 경로 탐색을 위한 경유지만 x,y 정보 제공
+     * @param map
+     * @return JSON
+     * @throws Exception
+     * 추가 사항 : 2022.11.10
+     */
+    @ResponseBody
+    @RequestMapping("/getForPath")
+    public JSONObject getForPath(@RequestParam HashMap<String, String> map) throws Exception {
+
+        ParsingJSONUtil util = new ParsingJSONUtil();
+        return util.listParsingJSON(service.getForPath(map));
+    }
+
+    /**
+     * 9. 경로 탐색 결과 값 저장 (xml -> db) 하고 바로 10번 메소드 실행
+     * @param map(String(xml))
+     * @return JSON
+     * @throws Exception
+     * 추가 사항 : 2022.11.10
+     */
+    @ResponseBody
+    @RequestMapping("/setPath")
+    public JSONObject setPath(@RequestParam HashMap<String, String> map) throws Exception {
+    	
+    	/* 
+		        다른 util인 이유 : json.simple 과 json 라이브러리 호환 문제
+		        json.simple => JSONObject, JSONArray 때 필요
+		        json => xml 파싱 때 필요
+    	 */
+    	ParsingHashMapUtil mUtil = new ParsingHashMapUtil();
+    	ArrayList<xmlVO> list = mUtil.xmlParsingJson(map.get("xmlDoc"));
+
+        // DB에 보낼 map 생성
+        HashMap<String, Object> map2db = new HashMap<>();
+    	
+    	// 1. SCHE_NO 존재유무 확인 : 있으면 SUB_NO UPDATE, 없다면 NEW 운행 정보 
+    	String scheNo = null;
+    	int scheSubNo = 1;
+        int result = 0;
+
+    	if(service.getScheNo(map) == null) {
+    		int check = service.setHist(map);
+    		if(check > 0) {
+                map2db.put("scheNo", service.getScheNo(map));
+                map2db.put("scheSubNo", "1");
+                map2db.put("list", list);
+
+                result = service.setPath(map2db);
+    		} else {
+                System.out.println("INSERT 실패 , 조건을 확인해주세요.");
+            }
+    	} else {
+            scheNo = service.getScheNo(map);
+    		scheSubNo = service.getScheSubNo(scheNo);
+            scheSubNo++;
+
+            map2db.put("scheNo", scheNo);
+            map2db.put("scheSubNo", scheSubNo);
+            map2db.put("list", list);
+
+            result = service.setPath(map2db);
+    	}
+
+        ParsingJSONUtil util = new ParsingJSONUtil();
+        return util.resultParsingJSON(result);
+
+    }
+
+    /**
+     * 10. 배차 차량에 경로 제공
+     * @param map
+     * @return JSON
+     * @throws Exception
+     * 추가 사항 : 2022.11.10
+     */
+    @ResponseBody
+    @RequestMapping("/getForDriver")
+    public JSONObject getForDriver(@RequestParam HashMap<String, String> map) throws Exception {
+
+        ParsingJSONUtil util = new ParsingJSONUtil();
+        System.out.println(util.listParsingJSON(service.getForDriver(map)));
+        return null;
+
+    }
+
 
 }
 

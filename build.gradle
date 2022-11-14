@@ -29,6 +29,9 @@ dependencies {
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
     implementation 'org.json:json:20220924'
     implementation group: 'com.oracle.ojdbc', name: 'orai18n', version: '19.3.0.0'
+    implementation 'commons-fileupload:commons-fileupload:1.4'
+    implementation 'commons-io:commons-io:2.4'
+
     // implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     compileOnly 'org.projectlombok:lombok'

@@ -186,11 +186,7 @@ public class ApiController {
     @RequestMapping("/getUser")
     public JSONObject getUser(@RequestParam HashMap<String, Object> map) throws Exception{
 
-    	System.out.println(map);
-        ParsingJSONUtil util = new ParsingJSONUtil();
-        
-        System.out.println(service.getUser(map));
-   
+        ParsingJSONUtil util = new ParsingJSONUtil();   
         return util.listParsingJSON(service.getUser(map));
 
     }

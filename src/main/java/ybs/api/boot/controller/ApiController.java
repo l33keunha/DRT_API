@@ -240,7 +240,7 @@ public class ApiController {
     	
     	// 경로 저장 후 저장한 경로 다시 web으로 반환
         if(result > 0){
-        	listFromdb = getForDriver(map2db.get("SCHE_NO"), map2db.get("SCHE_SUB_NO"));
+        	listFromdb = service.getForDriver(map2db);
             return util.listFromdbParsingJSON(listFromdb);
         }
         	return util.resultParsingJSON(result, 3);
@@ -248,19 +248,18 @@ public class ApiController {
 
     /**
      * 10. 배차 차량에 경로 제공
-     * @param Object
+     * @param map
      * @return listFromdb
      * @throws Exception
      * 추가 사항 : 2022.11.10
      */
     @ResponseBody
     @RequestMapping("/getForDriver")
-    public List<HashMap<String, Object>> getForDriver(Object scheNo, Object scheSubNo) throws Exception {
-    	HashMap<String, Object> map = new HashMap<String, Object>();
-    	map.put("SCHE_NO", scheNo);
-    	map.put("SCHE_SUB_NO", scheSubNo);
+    public JSONObject getForDriver(@RequestParam HashMap<String, Object> map) throws Exception {
 
-        return service.getForDriver(map);
+        ParsingJSONUtil util = new ParsingJSONUtil();
+        return util.listFromdbParsingJSON(service.getForDriver(map));
+
     }
 
     

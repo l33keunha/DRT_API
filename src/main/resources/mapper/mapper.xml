@@ -115,7 +115,7 @@
         SELECT NODE_ID, STTN_X, STTN_Y, USER_IN_CNT, USER_OUT_CNT
         FROM
             (
-                SELECT STTN_ID, NVL(USER_IN_CNT, 0) USER_IN_CNT, NVL(USER_OUT_CNT, 0) USER_OUT_CNT
+                SELECT STTN_ID, NVL(SUM(USER_IN_CNT), 0) USER_IN_CNT, NVL(SUM(USER_OUT_CNT), 0) USER_OUT_CNT
                 FROM
                     (
                         SELECT STTN_IN_ID STTN_ID, A.USER_CNT USER_IN_CNT, B.USER_CNT USER_OUT_CNT
@@ -158,6 +158,7 @@
                         WHERE 1=1
                           AND STTN_IN_ID(+) = STTN_OUT_ID
                     )
+                GROUP BY STTN_ID
             ) F1, DRP_STTN F2
         WHERE 1=1
           AND F1.STTN_ID = F2.STTN_ID

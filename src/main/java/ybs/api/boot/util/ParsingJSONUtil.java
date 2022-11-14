@@ -118,11 +118,6 @@ public class ParsingJSONUtil {
             JSONObject placeMark = new JSONObject();
             JSONArray arr = new JSONArray();
 
-            document.put("scheNo", listFromdb.get(0).get("SCHE_NO"));
-            document.put("scheSubNo", listFromdb.get(0).get("SCHE_SUB_NO"));
-            document.put("totalDistance", listFromdb.get(0).get("TOTAL_DIST"));
-            document.put("totalTime", listFromdb.get(0).get("TOTAL_TM"));
-
             for(int i = 0; i < listFromdb.size(); i++){
                 if(i == 0){
                     placeMark = new JSONObject();
@@ -175,9 +170,15 @@ public class ParsingJSONUtil {
                     arr.add(placeMark);
                 }
             }
+                document.put("PlaceMark", arr);
 
-                json.put("data", document);
-                json.put("PlaceMark", arr);
+                document.put("scheNo", listFromdb.get(0).get("SCHE_NO"));
+                document.put("scheSubNo", listFromdb.get(0).get("SCHE_SUB_NO"));
+                document.put("totalDistance", listFromdb.get(0).get("TOTAL_DIST"));
+                document.put("totalTime", listFromdb.get(0).get("TOTAL_TM"));
+
+                json.put("document", document);
+
                 code = "200";
                 msg = "success";
         } else {

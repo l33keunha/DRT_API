@@ -100,33 +100,16 @@
           AND USER_PHONE = #{USER_PHONE}
         ORDER BY USER_NO
     </select>
-
-    <insert id="updateHist" parameterType="Map">
-        INSERT INTO DRP_ROUTE_HIST VALUES
-            (
-                #{SCHE_NO},
-                TO_DATE(#{SDATE}, 'YYYYMMDD'),
-                #{ST_TM},
-                #{AREA_NM},
-                #{AREA_CD},
-                #{RUN_AREA_NM},
-                #{RUN_AREA_CD},
-                #{RUN_ORDER},
-                #{ROUTE_ID},
-                #{ROUTE_NM},
-                #{ROUTE_NMA},
-                #{ROUTE_DIR},
-                #{PLAT_NUM},
-                #{DRIVER_NM},
-                #{F_NODE_NM},
-                #{T_NODE_NM},
-                #{F_NODE_ID},
-                #{T_NODE_ID},
-                #{TOTAL_DIST},
-                #{TOTAL_TM},
-                #{USER_CNT}
-            )
-    </insert>
+    
+    <update id="updateHist" parameterType="Map">
+        UPDATE
+        	DRP_ROUTE_HIST
+        SET 
+        	TOTAL_DIST = #{TOTAL_DIST},
+        	TOTAL_TM = #{TOTAL_TM},
+        	USER_CNT = #{USER_CNT}
+        WHERE SCHE_NO = #{SCHE_NO}
+    </update>
 
     <select id="getForPath" parameterType="Map" resultType="Map">
         SELECT NODE_ID, STTN_X, STTN_Y, USER_IN_CNT, USER_OUT_CNT

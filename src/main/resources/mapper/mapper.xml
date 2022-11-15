@@ -51,8 +51,20 @@
           AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
           AND ST_TM LIKE #{ST_TM}||'%'
     </select>
+    
+    <select id="getUserXY" parameterType="Map" resultType="Map">
+    	SELECT 'STTN_IN_ID' STTN_ID_V, STTN_ID, STTN_X, STTN_Y
+		FROM DRP_STTN
+		WHERE 1=1
+			AND STTN_ID = #{STTN_IN_ID}
+		UNION
+		SELECT 'STTN_OUT_ID' STTN_ID_V, STTN_ID, STTN_X, STTN_Y 
+		FROM DRP_STTN
+		WHERE 1=1
+			AND STTN_ID = #{STTN_OUT_ID}
+    </select>
 
-    <insert id="setUserMast" parameterType="Map">
+    <insert id="setUser" parameterType="Map">
         INSERT INTO DRP_USER_MAST VALUES
             (
                 CONCAT(CONCAT(CONCAT(TO_CHAR(SYSDATE,'YYYYMMDD'), TO_CHAR(SYSDATE,'HH24MMSS')),'U'), LPAD(USER_NO.NEXTVAL,3,0)),
@@ -110,6 +122,20 @@
         	USER_CNT = #{USER_CNT}
         WHERE SCHE_NO = #{SCHE_NO}
     </update>
+    
+    <select id="getRouteXY" parameterType="Map" resultType="Map">
+    		SELECT 1 RANK, F_NODE_ID NODE_ID, ST_X STTN_X, ST_Y STTN_Y
+			FROM DRP_ROUTE
+			WHERE 1=1
+				AND ROUTE_ID =  #{ROUTE_ID}
+          		AND ROUTE_DIR = #{ROUTE_DIR}
+			UNION ALL
+			SELECT 3 RANK, T_NODE_ID, ED_X, ED_Y 
+			FROM DRP_ROUTE
+			WHERE 1=1
+				AND ROUTE_ID =  #{ROUTE_ID}
+          		AND ROUTE_DIR = #{ROUTE_DIR}
+    </select>
 
     <select id="getWayPoint" parameterType="Map" resultType="Map">
         SELECT NODE_ID, STTN_X, STTN_Y, USER_IN_CNT, USER_OUT_CNT

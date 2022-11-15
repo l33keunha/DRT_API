@@ -30,6 +30,7 @@ public class ParsingHashMapUtil {
         xmlVO vo = null;
 
         for(int i = 0; i < array.length(); i++){
+        	
             JSONObject obj = (JSONObject) array.get(i);
             vo = new xmlVO();
 
@@ -40,16 +41,18 @@ public class ParsingHashMapUtil {
             vo.setName(String.valueOf(obj.get("name")));
             vo.setNodeType(String.valueOf(obj.get("nodeType")));
 
-            if(i == 0 || i == array.length()-1){
+            if(("출발지").equals(obj.get("name")) || ("도착지").equals(obj.get("name"))){
                 vo.setTurnType(String.valueOf(obj.get("turnType")));
-            } else if(i % 2 != 0 && i != array.length()-1){
+                
+            } else if(("POINT").equals(obj.get("nodeType"))){
                 JSONObject coord = (JSONObject) obj.get("Point");
                 vo.setCoordinates(String.valueOf(coord.get("coordinates")));
 
                 vo.setPoint("Y");
                 vo.setPointIndex((int) obj.get("pointIndex"));
                 vo.setPointType(String.valueOf(obj.get("pointType")));
-            } else if(i % 2 == 0 && i != array.length()-1 && i != 0){
+                
+            } else if(("LINK").equals(obj.get("nodeType"))){
                 JSONObject coord = (JSONObject) obj.get("LineString");
                 vo.setCoordinates(String.valueOf(coord.get("coordinates")));
 
@@ -61,6 +64,7 @@ public class ParsingHashMapUtil {
                 vo.setFacilityType(String.valueOf(obj.get("facilityType")));
                 vo.setLinkId(String.valueOf(obj.get("linkid")));
                 vo.setCostdstn((int)obj.get("costdstn"));
+                
             }
 
             list.add(vo);

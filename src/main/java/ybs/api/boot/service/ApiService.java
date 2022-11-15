@@ -31,8 +31,9 @@ public interface ApiService {
      * 4. 예약 정보 저장
      * @param map
      * @return int
+     * @throws Exception 
      */
-    int setUserMast(HashMap<String, Object> map);
+    int setUser(HashMap<String, Object> map) throws Exception;
 
     /**
      * 5. 노선정보 조회
@@ -59,18 +60,17 @@ public interface ApiService {
      * @param map
      * @return JSON
      */
-    List<HashMap<String, Object>> getWayPoint(HashMap<String, String> map);
+    List<HashMap<String, Object>> getWayPoint(HashMap<String, Object> map);
 
     /**
      * 9. 경로 탐색 결과 값 저장 (xml -> db)
      * @param scheNo 
      * @param ArrayList<xmlVO>
      * @return JSON
+     * @throws Exception 
      */
-    int setPath(HashMap<String, Object> map2db);
-    String getScheNo(HashMap<String, String> map);
-    int setHist(HashMap<String, String> map);
-    int getScheSubNo(String scheNo);
+    List<HashMap<String, Object>> setPath(HashMap<String, Object> map2db) throws Exception;
+
 
     /**
      * 10. 배차 차량에 경로 제공

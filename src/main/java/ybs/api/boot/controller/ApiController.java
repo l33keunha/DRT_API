@@ -1,5 +1,10 @@
 package ybs.api.boot.controller;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +13,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.groovy.parser.antlr4.GroovyParser.NewPrmrAltContext;
+import org.apache.jasper.tagplugins.jstl.core.Url;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -103,11 +110,11 @@ public class ApiController {
      * @throws Exception
      */
     @ResponseBody
-    @RequestMapping("/setUserMast")
-    public JSONObject setUserMast(@RequestParam HashMap<String, Object> map) throws Exception{
+    @RequestMapping("/setUser")
+    public JSONObject setUser(@RequestParam HashMap<String, Object> map) throws Exception{
 
-        ParsingJSONUtil util = new ParsingJSONUtil();
-        return util.resultParsingJSON(service.setUserMast(map), 1);
+    	ParsingJSONUtil util = new ParsingJSONUtil();
+    	return util.resultParsingJSON(service.setUser(map), 1);
 
     }
 
@@ -167,7 +174,7 @@ public class ApiController {
      */
     @ResponseBody
     @RequestMapping("/getWayPoint")
-    public JSONObject getWayPoint(@RequestParam HashMap<String, String> map) throws Exception {
+    public JSONObject getWayPoint(@RequestParam HashMap<String, Object> map) throws Exception {
 
         ParsingJSONUtil util = new ParsingJSONUtil();
         return util.listParsingJSON(service.getWayPoint(map));
@@ -182,68 +189,11 @@ public class ApiController {
      */
     @ResponseBody
     @RequestMapping("/setPath")
-    public JSONObject setPath(@RequestParam HashMap<String, String> map) throws Exception {
+    public JSONObject setPath(@RequestParam HashMap<String, Object> map) throws Exception {
     	
-    	/* 
-    	 		※ xml -> list 파싱
-		        다른 util인 이유 : json.simple 과 json 라이브러리 호환 문제
-		        json.simple => JSONObject, JSONArray 때 필요
-		        json => xml 파싱 때 필요
-    	 */
-    	ParsingHashMapUtil mUtil = new ParsingHashMapUtil();
-    	ArrayList<xmlVO> list = mUtil.xmlParsingJson(map.get("xmlDoc"));
-
-        /*
-         		 ※ DB에 보낼 map 생성
-         		 map          : request Parameter from web
-         		 map2db     : xml 데이터 list로 파싱한 parameter to db
-         */
-        HashMap<String, Object> map2db = new HashMap<>();
+    	ParsingJSONUtil util = new ParsingJSONUtil();
+    	return util.listFromdbParsingJSON(service.setPath(map));
     	
-        /*
-         	 	※ if문 1. 필드
-         */
-    	String scheNo = null;
-    	int scheSubNo = 1;
-        int result = 0;
-        ParsingJSONUtil util = new ParsingJSONUtil();
-
-        // SCHE_NO 존재유무 확인 : 있으면 SUB_NO UPDATE, 없다면 NEW 운행 정보 
-    	if(service.getScheNo(map) == null) {
-    		int check = service.setHist(map);				
-    		if(check > 0) {
-                map2db.put("SCHE_NO", service.getScheNo(map));
-                map2db.put("SCHE_SUB_NO", "1");
-                map2db.put("list", list);
-
-                result = service.setPath(map2db);
-    		} else {
-    			return util.resultParsingJSON(result, 1);
-            }
-    	} else {
-            scheNo = service.getScheNo(map);
-    		scheSubNo = service.getScheSubNo(scheNo);
-            scheSubNo++;
-
-            map2db.put("SCHE_NO", scheNo);
-            map2db.put("SCHE_SUB_NO", scheSubNo);
-            map2db.put("list", list);
-
-            result = service.setPath(map2db);
-    	}
-        /*
-				 ※ DB에 보낼 map 생성
-				 list         		 : xml -> list 파싱
-				 listFromdb     : db로부터 받아온 경로 List<Map<String, Object>>
-         */
-    	List<HashMap<String, Object>> listFromdb = new ArrayList<HashMap<String, Object>>();
-    	
-    	// 경로 저장 후 저장한 경로 다시 web으로 반환
-        if(result > 0){
-        	listFromdb = service.getPath(map2db);
-            return util.listFromdbParsingJSON(listFromdb);
-        }
-        	return util.resultParsingJSON(result, 3);
     }
 
     /**

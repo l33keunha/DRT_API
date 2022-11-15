@@ -54,7 +54,8 @@ public interface ApiMapper {
      * @param map
      * @return int
      */
-    int setUserMast(HashMap<String, Object> map);
+    List<HashMap<String, Object>> getUserXY(HashMap<String, Object> map);
+    int setUser(HashMap<String, Object> map);
 
     /**
      * 5. 노선정보 조회
@@ -81,16 +82,18 @@ public interface ApiMapper {
      * @param map
      * @return JSON
      */
-    List<HashMap<String, Object>> getWayPoint(HashMap<String, String> map);
+    List<HashMap<String, Object>> getWayPoint(HashMap<String, Object> map);
 
     /**
      * 9. 경로 탐색 결과 값 저장 (xml -> db)
      * @param map(String(xml))
      * @return JSON
      */
+    List<HashMap<String, Object>> getRouteXY(HashMap<String, Object> map);
+    
     int setPath(HashMap<String, Object> map2db);
-    String getScheNo(HashMap<String, String> map);
-    int setHist(HashMap<String, String> map);
+    String getScheNo(HashMap<String, Object> map);
+    int setHist(HashMap<String, Object> map);
     int getScheSubNo(String scheNo);
 
     /**
@@ -108,4 +111,6 @@ public interface ApiMapper {
      * 추가 사항 : 2022.11.14
      */
     List<HashMap<String, Object>> getHist(HashMap<String, Object> map);
+
+
 }

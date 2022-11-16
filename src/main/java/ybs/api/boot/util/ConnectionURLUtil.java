@@ -29,7 +29,7 @@ public class ConnectionURLUtil {
 				WAYPOINT += "_";
 			}
 		} else {
-			WAYPOINT = null;
+			WAYPOINT = "";
 		}
 		
 		String param = "TYPE=ROUTING"
@@ -40,6 +40,7 @@ public class ConnectionURLUtil {
 				+ "&ANG=&OPTION=0"
 				+"&WAYPOINT=" + WAYPOINT
 				;
+		System.out.println(param);
 		return param;
 	}
 	

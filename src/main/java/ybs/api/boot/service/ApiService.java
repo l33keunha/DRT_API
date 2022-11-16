@@ -58,15 +58,14 @@ public interface ApiService {
     /**
      * 8. 경로 탐색을 위한 출/도착지, 경유지의 xy 정보 제공
      * @param map
-     * @return JSON
+     * @return List<Map>
      */
     List<HashMap<String, Object>> getWayPoint(HashMap<String, Object> map);
 
     /**
      * 9. 경로 탐색 결과 값 저장 (xml -> db)
-     * @param scheNo 
-     * @param ArrayList<xmlVO>
-     * @return JSON
+     * @param map 
+     * @return List<Map>
      * @throws Exception 
      */
     List<HashMap<String, Object>> setPath(HashMap<String, Object> map2db) throws Exception;
@@ -75,16 +74,14 @@ public interface ApiService {
     /**
      * 10. 배차 차량에 경로 제공
      * @param map
-     * @return JSON
+     * @return List<Map>
      */
     List<HashMap<String, Object>> getPath(HashMap<String, Object> map);
 
     /**
      * 11. 운행 요약 정보 조회
      * @param map
-     * @return JSON
-     * @throws Exception
-     * 추가 사항 : 2022.11.14
+     * @return List<Map>
      */
     List<HashMap<String, Object>> getHist(HashMap<String, Object> map);
 }

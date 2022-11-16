@@ -49,7 +49,7 @@
           AND ROUTE_ID =  #{ROUTE_ID}
           AND ROUTE_DIR = #{ROUTE_DIR}
           AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
-          AND ST_TM LIKE #{ST_TM}||'%'
+          AND ST_TM LIKE SUBSTR(#{ST_TM},1,2) || '%'
     </select>
     
     <select id="getUserXY" parameterType="Map" resultType="Map">
@@ -65,35 +65,129 @@
     </select>
 
     <insert id="setUser" parameterType="Map">
-        INSERT INTO DRP_USER_MAST VALUES
-            (
-                CONCAT(CONCAT(CONCAT(TO_CHAR(SYSDATE,'YYYYMMDD'), TO_CHAR(SYSDATE,'HH24MMSS')),'U'), LPAD(USER_NO.NEXTVAL,3,0)),
-                TO_DATE(#{REV_DATE}, 'YYYYMMDD'),
-                #{REV_TM},
-                TO_DATE(#{SDATE}, 'YYYYMMDD'),
-                #{ST_TM},
-                #{AREA_NM},
-                #{AREA_CD},
-                #{RUN_AREA_NM},
-                #{RUN_AREA_CD},
-                #{RUN_ORDER},
-                #{ROUTE_ID},
-                #{ROUTE_NM},
-                #{ROUTE_NMA},
-                #{ROUTE_DIR},
-                #{PLAT_NUM},
-                #{STTN_IN_NM},
-                #{STTN_OUT_NM},
-                #{STTN_IN_ID},
-                #{STTN_OUT_ID},
-                #{MAX_SEAT},
-                #{TOTAL_DIST},
-                #{TOTAL_TM},
-                #{USER_CNT},
-                #{USER_NM},
-                #{USER_PHONE},
-                #{REV_TYPE}
-            )
+		INSERT INTO DRP_USER_MAST(
+			USER_NO
+			,REV_DATE
+			,REV_TM
+			,SDATE
+			,ST_TM
+			,AREA_NM
+			,AREA_CD
+			,RUN_AREA_NM
+			,RUN_AREA_CD
+			,RUN_ORDER
+			,ROUTE_ID
+			,ROUTE_NM
+			,ROUTE_NMA
+			,ROUTE_DIR
+			,PLAT_NUM
+			,STTN_IN_NM
+			,STTN_OUT_NM
+			,STTN_IN_ID
+			,STTN_OUT_ID
+			,MAX_SEAT
+			,TOTAL_DIST
+			,TOTAL_TM
+			,USER_CNT
+			,USER_NM
+			,USER_PHONE
+			,REV_TYPE
+		) 
+		SELECT
+			CONCAT(CONCAT(CONCAT(TO_CHAR(SYSDATE,'YYYYMMDD'), TO_CHAR(SYSDATE,'HH24MMSS')),'U'), LPAD(USER_NO.NEXTVAL,3,0)) USER_NO 
+			,SYSDATE
+			,TO_CHAR(SYSDATE, 'HH24MMSS') REV_TM
+			,SDATE
+			,ST_TM
+			,A.AREA_NM
+			,A.AREA_CD
+			,A.RUN_AREA_NM
+			,A.RUN_AREA_CD
+			,RUN_ORDER
+			,A.ROUTE_ID
+			,ROUTE_NM
+			,ROUTE_NMA
+			,ROUTE_DIR
+			,PLAT_NUM
+			,STTN_IN_NM
+			,B.STTN_NM STTN_OUT_NM
+			,STTN_IN_ID
+			,STTN_OUT_ID
+			,MAX_USER MAX_SEAT
+			,#{TOTAL_DIST} TOTAL_DIST
+			,#{TOTAL_TM} TOTAL_TM
+			,#{USER_CNT} USER_CNT
+			,#{USER_NM} USER_NM
+			,#{USER_PHONE} USER_PHONE
+			,#{REV_TYPE} REV_TYPE
+		FROM
+		(
+			SELECT 
+				A.AREA_NM
+				,A.AREA_CD
+				,A.RUN_AREA_NM
+				,A.RUN_AREA_CD
+				,A.ROUTE_ID
+				,ROUTE_NM
+				,ROUTE_NMA
+				,ROUTE_DIR
+				,SDATE
+				,ST_TM
+				,RUN_ORDER
+				,PLAT_NUM
+				,MAX_USER
+				,STTN_IN_ID
+				,STTN_OUT_ID
+				,B.STTN_NM STTN_IN_NM
+			FROM
+			(
+				SELECT 
+					AREA_NM
+					,AREA_CD
+					,RUN_AREA_NM
+					,RUN_AREA_CD
+					,A.ROUTE_ID
+					,ROUTE_NM
+					,ROUTE_NMA
+					,ROUTE_DIR
+					,SDATE
+					,ST_TM
+					,RUN_ORDER
+					,PLAT_NUM
+					,MAX_USER
+					,#{STTN_IN_ID} STTN_IN_ID
+					,#{STTN_OUT_ID} STTN_OUT_ID
+				FROM
+				(SELECT 
+					AREA_NM
+					,AREA_CD
+					,RUN_AREA_NM
+					,RUN_AREA_CD
+					,ROUTE_ID
+					,ROUTE_NM
+					,ROUTE_NMA
+					,ROUTE_DIR
+				FROM DRP_ROUTE) A,
+				(SELECT 
+					SDATE
+					,ST_TM
+					,ROUTE_ID
+					,RUN_ORDER
+					,PLAT_NUM
+					,MAX_USER
+				FROM DRP_ROUTE_SCHE) B
+				WHERE 1=1
+					AND A.ROUTE_ID = B.ROUTE_ID 
+				   	AND B.SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
+				   	AND B.ST_TM LIKE SUBSTR(#{ST_TM},1,2) || '%'
+					AND A.ROUTE_ID = #{ROUTE_ID}
+				    AND A.ROUTE_DIR = #{ROUTE_DIR}
+			) A, DRP_STTN B
+			WHERE 1=1 
+				AND A.STTN_IN_ID = B.STTN_ID
+		) A, DRP_STTN B
+		WHERE 1=1
+			AND A.STTN_OUT_ID = B.STTN_ID
     </insert>
 
     <select id="getRoute" resultType="Map">
@@ -153,7 +247,7 @@
                                   AND ROUTE_ID =  #{ROUTE_ID}
                                   AND ROUTE_DIR = #{ROUTE_DIR}
                                   AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
-                                  AND ST_TM LIKE #{ST_TM}||'%'
+                                  AND ST_TM LIKE SUBSTR(#{ST_TM},1,2) || '%'
                                 GROUP BY STTN_IN_ID
                             ) A,
                             (
@@ -178,7 +272,7 @@
                                   AND ROUTE_ID =  #{ROUTE_ID}
                                   AND ROUTE_DIR = #{ROUTE_DIR}
                                   AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
-                                  AND ST_TM LIKE #{ST_TM}||'%'
+                                  AND ST_TM LIKE SUBSTR(#{ST_TM},1,2) || '%'
                                 GROUP BY STTN_OUT_ID
                             ) B
                         WHERE 1=1
@@ -198,7 +292,7 @@
 			AND ROUTE_ID =  #{ROUTE_ID}
             AND ROUTE_DIR = #{ROUTE_DIR}
             AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
-            AND ST_TM LIKE #{ST_TM}||'%'
+            AND ST_TM LIKE SUBSTR(#{ST_TM},1,2) || '%'
 	</select>
 	
 	<insert id="setHist">
@@ -229,7 +323,7 @@
 		SELECT 
 			CONCAT(CONCAT(CONCAT(TO_CHAR(SYSDATE,'YYYYMMDD'), TO_CHAR(SYSDATE,'HH24MMSS')),'S'), LPAD(SCHE_NO.NEXTVAL,3,0))
 			,TO_DATE(#{SDATE}, 'YYYYMMDD') 
-			,#{ST_TM}
+			,RPAD(SUBSTR(#{ST_TM},1,2),6,0)
 			,AREA_NM
 			,AREA_CD
 			,RUN_AREA_NM
@@ -239,7 +333,7 @@
 			,ROUTE_NM
 			,ROUTE_NMA
 			,ROUTE_DIR
-			,#{FLAT_NUM}
+			,#{PLAT_NUM}
 			,#{DRIVER_NM}
 			,F_NODE_NM
 			,T_NODE_NM
@@ -268,7 +362,7 @@
 	</select>
 	
     <insert id="setPath" parameterType="ybs.api.boot.service.xmlVO">
-        <foreach collection="list" item="vo" separator=" " open="INSERT ALL" close ="SELECT * FROM DUAL">
+        <foreach collection="vList" item="vo" separator=" " open="INSERT ALL" close ="SELECT * FROM DUAL">
             INTO DRP_PATH VALUES(
                 #{SCHE_NO},
                 #{SCHE_SUB_NO},

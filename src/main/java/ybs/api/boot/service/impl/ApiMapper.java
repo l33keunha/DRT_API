@@ -31,7 +31,7 @@ public interface ApiMapper {
     /**
      * 1. 운행지역 기준 정류장 정보 조회
      * @param map
-     * @return list<map>
+     * @return List<Map>
      */
     List<HashMap<String, Object>> getSttn(HashMap<String, Object> map);
 
@@ -50,11 +50,16 @@ public interface ApiMapper {
     List<HashMap<String, Object>> getUserMast(HashMap<String, Object> map);
 
     /**
-     * 4. 예약 정보 저장
+     * 4. 예약 정보 저장 : 예약자 승하차 정류장 xy 조회
      * @param map
      * @return int
      */
     List<HashMap<String, Object>> getUserXY(HashMap<String, Object> map);
+    /**
+     * 4. 예약 정보 저장 
+     * @param map
+     * @return int
+     */
     int setUser(HashMap<String, Object> map);
 
     /**
@@ -80,35 +85,52 @@ public interface ApiMapper {
     /**
      * 8. 경로 탐색을 위한 출/도착지, 경유지의 xy 정보 제공
      * @param map
-     * @return JSON
+     * @return List<Map>
      */
     List<HashMap<String, Object>> getWayPoint(HashMap<String, Object> map);
 
     /**
-     * 9. 경로 탐색 결과 값 저장 (xml -> db)
-     * @param map(String(xml))
-     * @return JSON
+     * 9. 운행 시작 및 경로 탐색 : 출,도착지 xy 조회
+     * @param map
+     * @return List<Map>
      */
     List<HashMap<String, Object>> getRouteXY(HashMap<String, Object> map);
-    
-    int setPath(HashMap<String, Object> map2db);
-    String getScheNo(HashMap<String, Object> map);
+    /**
+     * 9. 운행 시작 및 경로 탐색 : 운행정보 요약정보 저장 
+     * @param map
+     * @return int
+     */
     int setHist(HashMap<String, Object> map);
+    /**
+     * 9. 운행 시작 및 경로 탐색 : 경로 저장
+     * @param map
+     * @return int
+     */
+    int setPath(HashMap<String, Object> map);
+    /**
+     * 9. 운행 시작 및 경로 탐색 : 운행 번호 조회
+     * @param map
+     * @return String
+     */
+    String getScheNo(HashMap<String, Object> map);
+    /**
+     * 9. 운행 시작 및 경로 탐색 : 운행 번호 (실시간예약시) 조회
+     * @param map
+     * @return int
+     */
     int getScheSubNo(String scheNo);
 
     /**
      * 10. 배차 차량에 경로 제공
      * @param map
-     * @return JSON
+     * @return List<Map>
      */
     List<HashMap<String, Object>> getPath(HashMap<String, Object> map);
 
     /**
      * 11. 운행 요약 정보 조회
      * @param map
-     * @return JSON
-     * @throws Exception
-     * 추가 사항 : 2022.11.14
+     * @return List<Map>
      */
     List<HashMap<String, Object>> getHist(HashMap<String, Object> map);
 

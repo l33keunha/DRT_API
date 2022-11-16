@@ -101,7 +101,6 @@ public class ApiServiceImpl implements ApiService {
      * 7. 운행 종료 후 운행 정보 저장
      * @param map
      * @return int
-     * @throws Exception
      */
     @Override
     public int updateHist(HashMap<String, Object> map) { return mapper.updateHist(map); }
@@ -109,19 +108,27 @@ public class ApiServiceImpl implements ApiService {
     /**
      * 8. 경로 탐색을 위한 출/도착지, 경유지의 xy 정보 제공
      * @param map
-     * @return JSON
+     * @return List<Map>
      */
     @Override
     public List<HashMap<String, Object>> getWayPoint(HashMap<String, Object> map) { return mapper.getWayPoint(map); }
 
     /**
      * 9. 경로 탐색 결과 값 저장 (xml -> db)
-     * @param ArrayList<xmlVO>
-     * @return JSON
+     * @param map
+     * @return List<Map>
      * @throws Exception 
      */
     @Override
     public List<HashMap<String, Object>> setPath(HashMap<String, Object> map) throws Exception {
+    	/*
+				※ 필드 
+					rList : 출도착지 xy List
+					wList : 경유지 (정류장) xy List
+					rwList = 출도착지 + 경유지 xy List ( 출발지 - 경유지 - 도착지 순서보장 )
+					vList = RP엔진 리턴 값 ArrayList<xmlVO> 형태 List
+    	 * */
+    	
     	String scheNo = null;
     	int scheSubNo = 1;
         int result = 0;
@@ -129,25 +136,22 @@ public class ApiServiceImpl implements ApiService {
         // 1. 출, 도착지 XY 가져온다.
         List<HashMap<String, Object>> rList = mapper.getRouteXY(map);
         // 1. 경유지 XY 가져온다.
-        map.put("ST_TM", String.valueOf(map.get("ST_TM")).substring(0, 1));
+        map.put("ST_TM", String.valueOf(map.get("ST_TM")).substring(0, 2));
         List<HashMap<String, Object>> wList = mapper.getWayPoint(map);
         
-        List<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
-        list.add(rList.get(0));
-        list.add(rList.get(1));
+        List<HashMap<String, Object>> rwList = new ArrayList<HashMap<String, Object>>();
+        rwList.add(rList.get(0));
+        rwList.add(rList.get(1));
         for(HashMap<String, Object> obj : wList) {
-        	list.add(obj);
+        	rwList.add(obj);
         }
         
+        // 2. rwList 로 요청하여 RP엔진에서 경로를 받아온다.
         ConnectionURLUtil cUtil = new ConnectionURLUtil();
-        ArrayList<xmlVO> vList = cUtil.connectionURL(cUtil.makeParam(list));
+        ArrayList<xmlVO> vList = cUtil.connectionURL(cUtil.makeParam(rwList));
+        map.put("vList", vList);
         
-        for(xmlVO vo : vList) {
-        	System.out.println(vo.toString());
-        }
-        
-    	
-        // 2. SCHE_NO 존재유무 확인 : 있으면 SUB_NO UPDATE, 없다면 NEW 운행 정보 
+        // 3. SCHE_NO 존재유무 확인 : 있으면 SUB_NO UPDATE, 없다면 NEW 운행 정보 
     	if(mapper.getScheNo(map) == null) {
     		int check = mapper.setHist(map);
     		if(check > 0) {
@@ -165,10 +169,12 @@ public class ApiServiceImpl implements ApiService {
             map.put("SCHE_SUB_NO", scheSubNo);
     	}
     	
-    	
     	// 4. INSERT PATH
-    	
-    	// 5. SELECT PATH
+    	int result2 = mapper.setPath(map);
+    	if(result2 > 0) {
+    		// 5. SELECT PATH
+    		return mapper.getPath(map);
+    	}
     	
     	return null; 
     }
@@ -177,7 +183,7 @@ public class ApiServiceImpl implements ApiService {
     /**
      * 10. 배차 차량에 경로 제공
      * @param map
-     * @return JSON
+     * @return List<Map>
      */
     @Override
     public List<HashMap<String, Object>> getPath(HashMap<String, Object> map) { return mapper.getPath(map); }
@@ -185,9 +191,7 @@ public class ApiServiceImpl implements ApiService {
     /**
      * 11. 운행 요약 정보 조회
      * @param map
-     * @return JSON
-     * @throws Exception
-     * 추가 사항 : 2022.11.14
+     * @return List<Map>
      */
     @Override
     public List<HashMap<String, Object>> getHist(HashMap<String, Object> map) { return mapper.getHist(map); }

@@ -22,12 +22,14 @@ public class ConnectionURLUtil {
 		String WAYPOINT ="";
 		
 		if(list.size() > 2) {
-			for(int i = 0; i < list.size(); i++) {
-				WAYPOINT += list.get(i).get("STTN_X");
-				WAYPOINT += ",";
-				WAYPOINT += list.get(i).get("STTN_Y");
-				WAYPOINT += "_";
-			}
+			for(int i = 2; i < list.size(); i++) {
+					WAYPOINT += list.get(i).get("STTN_X");
+					WAYPOINT += ",";
+					WAYPOINT += list.get(i).get("STTN_Y");
+					if(i != list.size() -1) {
+						WAYPOINT += "_";
+					}
+				}
 		} else {
 			WAYPOINT = "";
 		}

@@ -36,11 +36,17 @@ public interface ApiMapper {
     List<HashMap<String, Object>> getSttn(HashMap<String, Object> map);
 
     /**
-     * 2. 탑승 조건 기준 배차 정보 조회
-     * @param map
+     * 2. 탑승 조건 기준 배차 정보 조회 : 기점 정류장 - 예약자 승차 정류장 소요시간
+     * @param List<Map>
      * @return map
      */
-    HashMap<String, Object> getSche(HashMap<String, Object> map);
+    List<HashMap<String, Object>> getSt2In(HashMap<String, Object> map);
+    /**
+     * 2. 탑승 조건 기준 배차 정보 조회
+     * @param List<Map>
+     * @return map
+     */
+    List<HashMap<String, Object>> getSche(HashMap<String, Object> map);
 
     /**
      * 3. 운전자가 운행할 차량의 예약자 조회
@@ -133,6 +139,7 @@ public interface ApiMapper {
      * @return List<Map>
      */
     List<HashMap<String, Object>> getHist(HashMap<String, Object> map);
+
 
 
 }

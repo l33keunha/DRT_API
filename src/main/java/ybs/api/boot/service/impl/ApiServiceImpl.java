@@ -10,6 +10,7 @@ import ybs.api.boot.util.ParsingHashMapUtil;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -47,9 +48,24 @@ public class ApiServiceImpl implements ApiService {
      * 2. 탑승 조건 기준 배차 정보 조회
      * @param map
      * @return map
+     * @throws Exception 
      */
     @Override
-    public HashMap<String, Object> getSche(HashMap<String, Object> map) { return mapper.getSche(map); }
+    public List<HashMap<String, Object>> getSche(HashMap<String, Object> map) throws Exception { 
+    	// 배차 정보의 기점xy와 승차정류장xy 의 소요시간 구하기
+    	List<HashMap<String, Object>> list = mapper.getSt2In(map);
+    	
+    	System.out.println(list.get(0).toString());
+    	System.out.println(list.get(1).toString());
+    	
+    	ConnectionURLUtil cUtil = new ConnectionURLUtil();
+    	ArrayList<xmlVO> vList = cUtil.connectionURL(cUtil.makeParam(list));
+    	
+    	map.put("TOTAL_TM", vList.get(0).getTotalTm());
+    	
+    	return mapper.getSche(map); 
+    	
+    }
 
     /**
      * 3. 운전자가 운행할 차량의 예약자 조회
@@ -144,6 +160,10 @@ public class ApiServiceImpl implements ApiService {
         rwList.add(rList.get(1));
         for(HashMap<String, Object> obj : wList) {
         	rwList.add(obj);
+        }
+        
+        for(HashMap<String, Object> oo : rwList) {
+        	System.out.println(oo.toString());
         }
         
         // 2. rwList 로 요청하여 RP엔진에서 경로를 받아온다.

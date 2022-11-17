@@ -72,7 +72,7 @@ public class ApiController {
     public JSONObject getSche(@RequestParam HashMap<String, Object> map) throws Exception {
 
         ParsingJSONUtil util = new ParsingJSONUtil();
-        return util.mapParsingJSON(service.getSche(map));
+        return util.listParsingJSON(service.getSche(map));
 
     }
 

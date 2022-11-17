@@ -17,6 +17,7 @@
         SELECT
             SDATE
              ,ST_TM
+             ,TO_CHAR(TO_DATE(ST_TM, 'HH24:MI:SS')+ 180 /60/24/60,'HH24MISS')) ST_TM_REV
              ,AREA_NM
              ,AREA_CD
              ,RUN_AREA_NM
@@ -38,8 +39,21 @@
             DRP_ROUTE_SCHE
         WHERE 1=1
           AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
-          AND ST_TM LIKE #{ST_TM}||'%'
+          AND ST_TM BETWEEN SUBSTR(#{ST_TM},1,2) || '0000' AND SUBSTR(#{ST_TM},1,2)+1 || '0000'
           AND ROUTE_ID =  #{ROUTE_ID}
+    </select>
+    
+    <select id="getSt2In"  parameterType="Map" resultType="Map">
+		SELECT '1'RANK, ST_X STTN_X, ST_Y STTN_Y
+		FROM DRP_ROUTE 
+		WHERE 1=1
+			AND ROUTE_ID = #{ROUTE_ID}
+		UNION
+		SELECT '2' RANK, STTN_X, STTN_Y 
+		FROM DRP_STTN 
+		WHERE 1=1
+			AND STTN_ID = #{STTN_IN_ID}
+		ORDER BY RANK
     </select>
 
     <select id="getUserMast" parameterType="Map" resultType="Map">
@@ -98,7 +112,7 @@
 			,SYSDATE
 			,TO_CHAR(SYSDATE, 'HH24MMSS') REV_TM
 			,SDATE
-			,ST_TM
+			,#{ST_TM}
 			,A.AREA_NM
 			,A.AREA_CD
 			,A.RUN_AREA_NM
@@ -377,6 +391,8 @@
                 #{vo.coordinates, jdbcType=VARCHAR},
                 #{vo.turnType, jdbcType=VARCHAR},
                 #{vo.pointIndex, jdbcType=INTEGER},
+                #{vo.nodeId, jdbcType=VARCHAR},
+                #{vo.nodeName, jdbcType=VARCHAR},
                 #{vo.pointType, jdbcType=VARCHAR},
                 #{vo.lineIndex, jdbcType=INTEGER},
                 #{vo.distance, jdbcType=INTEGER},

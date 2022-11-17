@@ -119,20 +119,27 @@ public class ParsingJSONUtil {
             JSONArray arr = new JSONArray();
 
             for(int i = 0; i < listFromdb.size(); i++){
-                if(i == 0){
+                if(("출발지").equals(listFromdb.get(i).get("NAME")) || ("도착지").equals(listFromdb.get(i).get("NAME"))){
                     placeMark = new JSONObject();
                     placeMark.put("index", listFromdb.get(i).get("INDEX"));
                     placeMark.put("pointIndex", listFromdb.get(i).get("POINT_INDEX"));
+                    placeMark.put("nodeid", listFromdb.get(i).get("NODE_ID"));
+                    placeMark.put("nodename", listFromdb.get(i).get("NODE_NAME"));
                     placeMark.put("name", listFromdb.get(i).get("NAME"));
                     placeMark.put("nodeType", listFromdb.get(i).get("NODE_TYPE"));
                     placeMark.put("turnType", listFromdb.get(i).get("TURN_TYPE"));
                     placeMark.put("pointType", listFromdb.get(i).get("POINT_TYPE"));
+                    JSONObject point = new JSONObject();
+                    point.put("coordinates",listFromdb.get(i).get("COORDINATES"));
+                    placeMark.put("Point", point);
 
                     arr.add(placeMark);
-                } else if (i % 2 != 0){
+                } else if (("POINT").equals(listFromdb.get(i).get("NODE_TYPE"))){
                     placeMark = new JSONObject();
                     placeMark.put("index", listFromdb.get(i).get("INDEX"));
                     placeMark.put("pointIndex", listFromdb.get(i).get("POINT_INDEX"));
+                    placeMark.put("nodeid", listFromdb.get(i).get("NODE_ID"));
+                    placeMark.put("nodename", listFromdb.get(i).get("NODE_NAME"));
                     placeMark.put("name", listFromdb.get(i).get("NAME"));
                     placeMark.put("nodeType", listFromdb.get(i).get("NODE_TYPE"));
                     placeMark.put("pointType", listFromdb.get(i).get("POINT_TYPE"));
@@ -141,7 +148,7 @@ public class ParsingJSONUtil {
                     placeMark.put("Point", point);
 
                     arr.add(placeMark);
-                } else if (i % 2 == 0){
+                } else if (("LINE").equals(listFromdb.get(i).get("NODE_TYPE"))){
                     placeMark = new JSONObject();
                     placeMark.put("index", listFromdb.get(i).get("INDEX"));
                     placeMark.put("lineIndex", listFromdb.get(i).get("LINE_INDEX"));
@@ -156,16 +163,6 @@ public class ParsingJSONUtil {
                     placeMark.put("LineString", lineString);
                     placeMark.put("linkid", listFromdb.get(i).get("LINK_ID"));
                     placeMark.put("costdstn", listFromdb.get(i).get("COSTDSTN"));
-
-                    arr.add(placeMark);
-                } else if(i == listFromdb.size()-1){
-                    placeMark = new JSONObject();
-                    placeMark.put("index", listFromdb.get(i).get("INDEX"));
-                    placeMark.put("pointIndex", listFromdb.get(i).get("POINT_INDEX"));
-                    placeMark.put("name", listFromdb.get(i).get("NAME"));
-                    placeMark.put("nodeType", listFromdb.get(i).get("NODE_TYPE"));
-                    placeMark.put("turnType", listFromdb.get(i).get("TURN_TYPE"));
-                    placeMark.put("pointType", listFromdb.get(i).get("POINT_TYPE"));
 
                     arr.add(placeMark);
                 }

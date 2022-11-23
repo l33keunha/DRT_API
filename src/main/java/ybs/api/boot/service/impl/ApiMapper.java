@@ -47,7 +47,12 @@ public interface ApiMapper {
      * @return map
      */
     List<HashMap<String, Object>> getSche(HashMap<String, Object> map);
-
+    int findUser(HashMap<String, Object> map);
+    HashMap<String, Object> getSt_XY(HashMap<String, Object> map);
+    HashMap<String, Object> getFN_XY(HashMap<String, Object> map);
+    String findSttn(HashMap<String, Object> map);
+    List<HashMap<String, Object>> getWay2In(HashMap<String, Object> map);
+    
     /**
      * 3. 운전자가 운행할 차량의 예약자 조회
      * @param map
@@ -139,6 +144,14 @@ public interface ApiMapper {
      * @return List<Map>
      */
     List<HashMap<String, Object>> getHist(HashMap<String, Object> map);
+
+	
+
+	
+
+	
+
+
 
 
 

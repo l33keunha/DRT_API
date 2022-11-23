@@ -154,7 +154,7 @@ public class ApiServiceImpl implements ApiService {
     	} else if( cnt != 0 ) {		// Q1 - A2. 첫번 째 예약자가 아님
     		// Q2. 겹치는 정류장이 있는가?
     		goMap.put("STTN_IN_ID", map.get("STTN_IN_ID"));
-    		String BOARDING_TM = mapper.findSttn(goMap);															// mapper.findSttn(goMap) !=  null : 겹치는 정류장O , mapper.findSttn(goMap) == null : 겹치는 정류장X
+    		String BOARDING_TM = mapper.findSttn(goMap);											// mapper.findSttn(goMap) !=  null : 겹치는 정류장O , mapper.findSttn(goMap) == null : 겹치는 정류장X
     		if( BOARDING_TM != null ) {		// Q2 - A1. 겹치는 정류장이 있음 
     			// (겹치는 정류장 탑승시간 - 나의 시간 소요시간 비교)
     			goMap.put("BOARDING_TM", BOARDING_TM);
@@ -169,6 +169,20 @@ public class ApiServiceImpl implements ApiService {
     					fList.add(fMap);
     	    		
     			} else if( YN == "N" ) {		// Q3 - A2. 시간 내 탑승 불가능함.										// ** [다음 배차 비교] 여기서 ST_TM -> ST_TM_NEXT로 변경
+    				
+    				/* 보너스 */
+        			System.out.println("보너스 : " + goMap.toString());
+        			list = mapper.getWay2In(goMap);
+        			if(!list.get(0).get("STTN_IN_ID").equals(goMap.get("STTN_IN_ID"))) {
+        				vList = cUtil.connectionURL(cUtil.makeParam(list));					
+        				
+        				goMap.put("ROUTE_TM", list.get(0).get("BOARDING_TM"));								// 마지막 정류장 탑승시간(=출발시간)
+        				goMap.put("TOTAL_TM", vList.get(0).getTotalTm());										// (기마지막정류장점 - 정류장 소요시간)
+        				
+        				goMap.put("BOARDING_TM", tUtil.getBoardingTm4Tm(goMap));
+        				fMap.put("2", mapper.getSche(goMap));
+        			}
+    				
     				// Q4. 다음 노선의 첫번째 예약자인가? - findUser(ST_TM_NEXT)
         			int tmp = Integer.parseInt(String.valueOf(map.get("ST_TM")).substring(0,2)) +1;
         			String ST_TM_NEXT = String.valueOf(tmp) + "0000"; 												// 다음 배차시간
@@ -187,7 +201,7 @@ public class ApiServiceImpl implements ApiService {
     		    		mapST_STTN = tUtil.getBoardingTmST(goMap);
     		    		
     		    		goMap.put("BOARDING_TM", mapST_STTN.get("BOARDING_TM"));
-    		    		fMap.put("2", mapper.getSche(goMap));
+    		    		fMap.put("3", mapper.getSche(goMap));
     		    		
     		    		fList.add(fMap);
     					 
@@ -200,7 +214,7 @@ public class ApiServiceImpl implements ApiService {
     						System.out.println("TM1 + TM2 -End [F7]");
     						
         					goMap.put("BOARDING_TM", BOARDING_TM);												// 다음 배차시간에 예약되어있던 정류장의 탑승시간을 그대로 쓴다. (무조건 탑승)
-            	    		fMap.put("2", mapper.getSche(goMap));
+            	    		fMap.put("3", mapper.getSche(goMap));
         					
             	    		fList.add(fMap);
     						
@@ -216,7 +230,7 @@ public class ApiServiceImpl implements ApiService {
             				goMap.put("TOTAL_TM", vList.get(0).getTotalTm());										// (기마지막정류장점 - 정류장 소요시간)
             				
             				goMap.put("BOARDING_TM", tUtil.getBoardingTm4Tm(goMap));
-            	    		fMap.put("2", mapper.getSche(goMap));
+            	    		fMap.put("3", mapper.getSche(goMap));
             	    		
             	    		fList.add(fMap);
     					}

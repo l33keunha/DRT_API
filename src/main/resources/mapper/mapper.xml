@@ -53,7 +53,7 @@
     </select>
     
     <select id ="findSttn" parameterType="Map" resultType="string">
- 		SELECT BOARDING_TM 
+ 		SELECT DISTINCT BOARDING_TM 
 		FROM DRP_USER_MAST 
 		WHERE 1=1
 	          AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
@@ -300,7 +300,7 @@
           		AND ROUTE_DIR = #{ROUTE_DIR}
     </select>
 
-    <select id="getWayPoint" parameterType="Map" resultType="Map">
+    <select id="getWayPoint_OLD" parameterType="Map" resultType="Map">
         SELECT NODE_ID, STTN_X, STTN_Y, USER_IN_CNT, USER_OUT_CNT
         FROM
             (
@@ -352,6 +352,25 @@
         WHERE 1=1
           AND F1.STTN_ID = F2.STTN_ID
         ORDER BY NODE_ID
+    </select>
+    
+    <select id="getWayPoint" parameterType="Map" resultType="Map">
+	    SELECT STTN_IN_ID, B.STTN_X, B.STTN_Y ,BOARDING_TM 
+		FROM DRP_USER_MAST A, DRP_STTN B
+		WHERE 1=1
+			AND A.STTN_IN_ID = B.STTN_ID 
+			AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
+		    AND BOARDING_TM LIKE SUBSTR(#{ST_TM},1,2) || '%'
+		    AND ROUTE_DIR = #{ROUTE_DIR}
+		UNION ALL
+		SELECT DISTINCT STTN_OUT_ID, B.STTN_X, B.STTN_Y, NULL BOARDING_TM 
+		FROM DRP_USER_MAST A, DRP_STTN B
+		WHERE 1=1
+			AND A.STTN_OUT_ID = B.STTN_ID
+			AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
+		    AND BOARDING_TM LIKE SUBSTR(#{ST_TM},1,2) || '%'
+		    AND ROUTE_DIR = #{ROUTE_DIR}
+		ORDER BY BOARDING_TM
     </select>
 
 	<select id="getScheNo" parameterType="Map" resultType="string">

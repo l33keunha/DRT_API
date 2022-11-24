@@ -46,7 +46,7 @@ public interface ApiMapper {
      * @param List<Map>
      * @return map
      */
-    List<HashMap<String, Object>> getSche(HashMap<String, Object> map);
+    HashMap<String, Object> getSche(HashMap<String, Object> map);
     int findUser(HashMap<String, Object> map);
     HashMap<String, Object> getSt_XY(HashMap<String, Object> map);
     HashMap<String, Object> getFN_XY(HashMap<String, Object> map);

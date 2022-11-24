@@ -128,13 +128,14 @@
     </select>
 
     <select id="getUserMast" parameterType="Map" resultType="Map">
-        SELECT *
-        FROM DRP_USER_MAST
+        SELECT DISTINCT A.*, B.DRIVER_NM 
+        FROM DRP_USER_MAST A, DRP_ROUTE_SCHE B
         WHERE 1=1
-          AND ROUTE_ID =  #{ROUTE_ID}
-          AND ROUTE_DIR = #{ROUTE_DIR}
-          AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
-          AND ST_TM LIKE SUBSTR(#{ST_TM},1,2) || '%'
+          AND A.ROUTE_ID = B.ROUTE_ID
+          AND A.ROUTE_ID =  #{ROUTE_ID}
+          AND A.ROUTE_DIR = #{ROUTE_DIR}
+          AND A.SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
+          AND A.ST_TM LIKE SUBSTR(#{ST_TM},1,2) || '%'
     </select>
     
      <select id="getUserXY" parameterType="Map" resultType="Map">
@@ -336,7 +337,7 @@
           		AND ROUTE_DIR = #{ROUTE_DIR}
     </select>
 
-    <select id="getWayPoint_OLD" parameterType="Map" resultType="Map">
+    <select id="getWayPoint_old" parameterType="Map" resultType="Map">
         SELECT NODE_ID, STTN_X, STTN_Y, USER_IN_CNT, USER_OUT_CNT
         FROM
             (
@@ -397,6 +398,7 @@
 			AND A.STTN_IN_ID = B.STTN_ID 
 			AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
 		    AND BOARDING_TM LIKE SUBSTR(#{ST_TM},1,2) || '%'
+			AND ROUTE_ID =#{ROUTE_ID}
 		    AND ROUTE_DIR = #{ROUTE_DIR}
 		UNION ALL
 		SELECT DISTINCT STTN_OUT_ID, B.STTN_X, B.STTN_Y, NULL BOARDING_TM 
@@ -405,6 +407,7 @@
 			AND A.STTN_OUT_ID = B.STTN_ID
 			AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
 		    AND BOARDING_TM LIKE SUBSTR(#{ST_TM},1,2) || '%'
+		    AND ROUTE_ID =#{ROUTE_ID}
 		    AND ROUTE_DIR = #{ROUTE_DIR}
 		ORDER BY BOARDING_TM
     </select>

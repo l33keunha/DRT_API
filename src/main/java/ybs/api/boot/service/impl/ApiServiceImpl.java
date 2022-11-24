@@ -436,6 +436,7 @@ public class ApiServiceImpl implements ApiService {
         rwList.add(rList.get(0));
         rwList.add(rList.get(1));
         for(HashMap<String, Object> obj : wList) {
+          System.out.println(obj.toString());
            rwList.add(obj);
         }
         

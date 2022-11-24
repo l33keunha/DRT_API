@@ -101,6 +101,7 @@ public interface ApiMapper {
      * @return List<Map>
      */
     List<HashMap<String, Object>> getWayPoint(HashMap<String, Object> map);
+    List<HashMap<String, Object>> getWayPoint_old(HashMap<String, Object> map);
 
     /**
      * 9. 운행 시작 및 경로 탐색 : 출,도착지 xy 조회
@@ -146,6 +147,7 @@ public interface ApiMapper {
      * @return List<Map>
      */
     List<HashMap<String, Object>> getHist(HashMap<String, Object> map);
+
 
 	
 

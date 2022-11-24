@@ -35,6 +35,8 @@
              ,T_NODE_ID
              ,MAX_TM
              ,MAX_USER
+             ,#{TOTAL_TIME} TOTAL_TIME
+             ,#{TOTAL_DISTANCE} TOTAL_DISTANCE
         FROM
             DRP_ROUTE_SCHE
         WHERE 1=1
@@ -53,13 +55,29 @@
     </select>
     
     <select id ="findSttn" parameterType="Map" resultType="string">
- 		SELECT DISTINCT BOARDING_TM 
+		SELECT BOARDING_TM
+		FROM
+		(
+			SELECT ROWNUM, BOARDING_TM 
+			FROM DRP_USER_MAST 
+			WHERE 1=1
+			  AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
+			  AND ST_TM LIKE SUBSTR(#{ST_TM},1,2) || '%'
+			  AND ROUTE_ID =  #{ROUTE_ID}
+		      AND STTN_IN_ID = #{STTN_IN_ID}
+			 ORDER BY BOARDING_TM 
+		)
+		WHERE ROWNUM = 1
+    </select>
+    
+    <select id ="findSttn_BONUS" parameterType="Map" resultType="integer">
+		SELECT COUNT(*)
 		FROM DRP_USER_MAST 
 		WHERE 1=1
-	          AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
-	          	AND BOARDING_TM LIKE SUBSTR(#{ST_TM},1,2) || '%'
-	          AND ROUTE_ID =  #{ROUTE_ID}
-	          AND STTN_IN_ID = #{STTN_IN_ID}
+			AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
+			AND ST_TM LIKE SUBSTR(#{ST_TM},1,2) || '%'
+			AND ROUTE_ID =  #{ROUTE_ID}
+		    AND STTN_IN_ID = #{STTN_IN_ID}
     </select>
     
     <select id="getSt2In"  parameterType="Map" resultType="Map">
@@ -129,6 +147,24 @@
 		FROM DRP_STTN
 		WHERE 1=1
 			AND STTN_ID = #{STTN_OUT_ID}
+    </select>
+    
+     <select id="getUserXY_2" parameterType="Map" resultType="Map">
+		SELECT STTN_IN_ID, B.STTN_X, B.STTN_Y ,BOARDING_TM, B.NODE_ID, A.STTN_IN_NM 
+		FROM DRP_USER_MAST A, DRP_STTN_NEW B
+		WHERE 1=1
+			AND A.STTN_IN_ID = B.STTN_ID 
+		    AND ROUTE_ID = #{ROUTE_ID}
+		    AND STTN_IN_ID = #{STTN_IN_ID}
+		    AND BOARDING_TM = #{BOARDING_TM}
+		UNION ALL
+		SELECT DISTINCT STTN_OUT_ID, B.STTN_X, B.STTN_Y, NULL BOARDING_TM, B.NODE_ID, A.STTN_OUT_NM 
+		FROM DRP_USER_MAST A, DRP_STTN_NEW B
+		WHERE 1=1
+			AND A.STTN_OUT_ID = B.STTN_ID
+		    AND ROUTE_ID = #{ROUTE_ID}
+		    AND STTN_OUT_ID = #{STTN_OUT_ID}
+		ORDER BY BOARDING_TM 
     </select>
 
     <insert id="setUser" parameterType="Map">

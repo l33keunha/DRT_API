@@ -79,7 +79,7 @@ public class ApiServiceImpl implements ApiService {
     	int cnt = mapper.findUser(goMap);																					// cnt == 0 : 첫번째 예약자 , cnt != 0 : 첫번째 예약자X 
     	if( cnt == 0 ) {		// Q1 - A1. 첫번 째 예약자
     		// (기점 - 정류장 소요시간 비교)
-    		goMap.put("STTN_IN_ID", map.get("STTN_IN_ID"));
+    		goMap.put("STTN_IN_ID", map.get("STTN_IN_ID")); goMap.put("STTN_OUT_ID", map.get("STTN_OUT_ID")); 
     		list = mapper.getSt2In(goMap);																					// (기점 - 정류장 XY좌표)
     		vList = cUtil.connectionURL(cUtil.makeParam(list));														// RP엔진 경로
     		
@@ -89,6 +89,9 @@ public class ApiServiceImpl implements ApiService {
     		mapST_STTN = tUtil.getBoardingTmST(goMap);
     		
     		goMap.put("BOARDING_TM", mapST_STTN.get("BOARDING_TM"));
+    		/* 승차정류장 - (경유지) - 하차정류장 소요거리 및 소요시간 */
+    		goMap.put("TOTAL_TIME", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY(goMap))).get(0).getTotalTm());
+    		goMap.put("TOTAL_DISTANCE", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY(goMap))).get(0).getTotalDist());
     		fMap.put("1", mapper.getSche(goMap));
     		
     		// Q2. 시간 내 탑승이 가능한가? 
@@ -116,6 +119,9 @@ public class ApiServiceImpl implements ApiService {
     	    		mapST_STTN = tUtil.getBoardingTmST(goMap);
     	    		
     	    		goMap.put("BOARDING_TM", mapST_STTN.get("BOARDING_TM"));
+    	    		/* 승차정류장 - (경유지) - 하차정류장 소요거리 및 소요시간 */
+    	    		goMap.put("TOTAL_TIME", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY(goMap))).get(0).getTotalTm());
+    	    		goMap.put("TOTAL_DISTANCE", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY(goMap))).get(0).getTotalDist());
     	    		fMap.put("2", mapper.getSche(goMap));
     				
     	    		fList.add(fMap);
@@ -128,6 +134,9 @@ public class ApiServiceImpl implements ApiService {
     					System.out.println("TM1 + TM2 -End [F3]");
     					
     					goMap.put("BOARDING_TM", BOARDING_TM);													// 다음 배차시간에 예약되어있던 정류장의 탑승시간을 그대로 쓴다. (무조건 탑승)
+    		    		/* 승차정류장 - (경유지) - 하차정류장 소요거리 및 소요시간 */
+    		    		goMap.put("TOTAL_TIME", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY_2(goMap))).get(0).getTotalTm());
+    		    		goMap.put("TOTAL_DISTANCE", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY_2(goMap))).get(0).getTotalDist());
         	    		fMap.put("2", mapper.getSche(goMap));
     					
         	    		fList.add(fMap);
@@ -145,6 +154,9 @@ public class ApiServiceImpl implements ApiService {
         				goMap.put("TOTAL_TM", vList.get(0).getTotalTm());											// (기마지막정류장점 - 정류장 소요시간)
         				
         				goMap.put("BOARDING_TM", tUtil.getBoardingTm4Tm(goMap));
+        				/* 승차정류장 - (경유지) - 하차정류장 소요거리 및 소요시간 */
+    		    		goMap.put("TOTAL_TIME", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY(goMap))).get(0).getTotalTm());
+    		    		goMap.put("TOTAL_DISTANCE", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY(goMap))).get(0).getTotalDist());
         	    		fMap.put("2", mapper.getSche(goMap));
         	    		
         	    		fList.add(fMap);
@@ -153,14 +165,17 @@ public class ApiServiceImpl implements ApiService {
     		}
     	} else if( cnt != 0 ) {		// Q1 - A2. 첫번 째 예약자가 아님
     		// Q2. 겹치는 정류장이 있는가?
-    		goMap.put("STTN_IN_ID", map.get("STTN_IN_ID"));
+    		goMap.put("STTN_IN_ID", map.get("STTN_IN_ID")); goMap.put("STTN_OUT_ID", map.get("STTN_OUT_ID"));
     		String BOARDING_TM = mapper.findSttn(goMap);											// mapper.findSttn(goMap) !=  null : 겹치는 정류장O , mapper.findSttn(goMap) == null : 겹치는 정류장X
     		if( BOARDING_TM != null ) {		// Q2 - A1. 겹치는 정류장이 있음 
     			// (겹치는 정류장 탑승시간 - 나의 시간 소요시간 비교)
     			goMap.put("BOARDING_TM", BOARDING_TM);
     			// Q3. 시간내 탑승이 가능한가?
     			String YN = tUtil.booleanBoarding(goMap);												// mapWAY_STTN.get("YN") == "Y" : 시간 내 가능, mapWAY_STTN.get("YN") == "N" : 불가능
-    				
+    			
+    			/* 승차정류장 - (경유지) - 하차정류장 소요거리 및 소요시간 */
+	    		goMap.put("TOTAL_TIME", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY_2(goMap))).get(0).getTotalTm());
+	    		goMap.put("TOTAL_DISTANCE", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY_2(goMap))).get(0).getTotalDist());
 				fMap.put("1", mapper.getSche(goMap));
 				
 				if( YN == "Y" ) {		// Q3 - A1. 시간 내 탑승 가능함.
@@ -170,16 +185,21 @@ public class ApiServiceImpl implements ApiService {
     	    		
     			} else if( YN == "N" ) {		// Q3 - A2. 시간 내 탑승 불가능함.										// ** [다음 배차 비교] 여기서 ST_TM -> ST_TM_NEXT로 변경
     				
-    				/* 보너스 */
-        			System.out.println("보너스 : " + goMap.toString());
         			list = mapper.getWay2In(goMap);
-        			if(!list.get(0).get("STTN_IN_ID").equals(goMap.get("STTN_IN_ID"))) {
+        			
+        			System.out.println("보너스 : " + goMap.toString());
+        			
+        			if( mapper.findSttn_BONUS(goMap) > 0 ) {
+        				/* 보너스 */
         				vList = cUtil.connectionURL(cUtil.makeParam(list));					
         				
         				goMap.put("ROUTE_TM", list.get(0).get("BOARDING_TM"));								// 마지막 정류장 탑승시간(=출발시간)
         				goMap.put("TOTAL_TM", vList.get(0).getTotalTm());										// (기마지막정류장점 - 정류장 소요시간)
         				
         				goMap.put("BOARDING_TM", tUtil.getBoardingTm4Tm(goMap));
+        				/* 승차정류장 - (경유지) - 하차정류장 소요거리 및 소요시간 */
+    		    		goMap.put("TOTAL_TIME", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY(goMap))).get(0).getTotalTm());
+    		    		goMap.put("TOTAL_DISTANCE", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY(goMap))).get(0).getTotalDist());
         				fMap.put("2", mapper.getSche(goMap));
         			}
     				
@@ -201,6 +221,9 @@ public class ApiServiceImpl implements ApiService {
     		    		mapST_STTN = tUtil.getBoardingTmST(goMap);
     		    		
     		    		goMap.put("BOARDING_TM", mapST_STTN.get("BOARDING_TM"));
+    		    		/* 승차정류장 - (경유지) - 하차정류장 소요거리 및 소요시간 */
+    		    		goMap.put("TOTAL_TIME", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY(goMap))).get(0).getTotalTm());
+    		    		goMap.put("TOTAL_DISTANCE", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY(goMap))).get(0).getTotalDist());
     		    		fMap.put("3", mapper.getSche(goMap));
     		    		
     		    		fList.add(fMap);
@@ -214,6 +237,9 @@ public class ApiServiceImpl implements ApiService {
     						System.out.println("TM1 + TM2 -End [F7]");
     						
         					goMap.put("BOARDING_TM", BOARDING_TM);												// 다음 배차시간에 예약되어있던 정류장의 탑승시간을 그대로 쓴다. (무조건 탑승)
+        					/* 승차정류장 - (경유지) - 하차정류장 소요거리 및 소요시간 */
+        		    		goMap.put("TOTAL_TIME", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY_2(goMap))).get(0).getTotalTm());
+        		    		goMap.put("TOTAL_DISTANCE", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY_2(goMap))).get(0).getTotalDist());
             	    		fMap.put("3", mapper.getSche(goMap));
         					
             	    		fList.add(fMap);
@@ -230,6 +256,9 @@ public class ApiServiceImpl implements ApiService {
             				goMap.put("TOTAL_TM", vList.get(0).getTotalTm());										// (기마지막정류장점 - 정류장 소요시간)
             				
             				goMap.put("BOARDING_TM", tUtil.getBoardingTm4Tm(goMap));
+            				/* 승차정류장 - (경유지) - 하차정류장 소요거리 및 소요시간 */
+        		    		goMap.put("TOTAL_TIME", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY(goMap))).get(0).getTotalTm());
+        		    		goMap.put("TOTAL_DISTANCE", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY(goMap))).get(0).getTotalDist());
             	    		fMap.put("3", mapper.getSche(goMap));
             	    		
             	    		fList.add(fMap);
@@ -242,8 +271,10 @@ public class ApiServiceImpl implements ApiService {
 				
 				goMap.put("ROUTE_TM", list.get(0).get("BOARDING_TM"));									// 마지막 정류장 탑승시간(=출발시간)
 				goMap.put("TOTAL_TM", vList.get(0).getTotalTm());											// (마지막정류장점 - 정류장 소요시간)
-				
 				goMap.put("BOARDING_TM", tUtil.getBoardingTm4Tm(goMap));
+				/* 승차정류장 - (경유지) - 하차정류장 소요거리 및 소요시간 */
+	    		goMap.put("TOTAL_TIME", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY(goMap))).get(0).getTotalTm());
+	    		goMap.put("TOTAL_DISTANCE", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY(goMap))).get(0).getTotalDist());
 	    		fMap.put("1", mapper.getSche(goMap));
 	    		
 	    		// Q3. 시간 내 탑승이 가능한가?
@@ -273,6 +304,9 @@ public class ApiServiceImpl implements ApiService {
     		    		mapST_STTN = tUtil.getBoardingTmST(goMap);
     		    		
     		    		goMap.put("BOARDING_TM", mapST_STTN.get("BOARDING_TM"));
+    		    		/* 승차정류장 - (경유지) - 하차정류장 소요거리 및 소요시간 */
+    		    		goMap.put("TOTAL_TIME", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY(goMap))).get(0).getTotalTm());
+    		    		goMap.put("TOTAL_DISTANCE", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY(goMap))).get(0).getTotalDist());
     		    		fMap.put("2", mapper.getSche(goMap));
     		    		
     		    		fList.add(fMap);
@@ -285,6 +319,9 @@ public class ApiServiceImpl implements ApiService {
     						System.out.println("TM1 + TM2 -End [F11]");
     						
         					goMap.put("BOARDING_TM", BOARDING_TM);												// 다음 배차시간에 예약되어있던 정류장의 탑승시간을 그대로 쓴다. (무조건 탑승)
+        					/* 승차정류장 - (경유지) - 하차정류장 소요거리 및 소요시간 */
+        		    		goMap.put("TOTAL_TIME", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY_2(goMap))).get(0).getTotalTm());
+        		    		goMap.put("TOTAL_DISTANCE", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY_2(goMap))).get(0).getTotalDist());
             	    		fMap.put("2", mapper.getSche(goMap));
         					
             	    		fList.add(fMap);
@@ -296,11 +333,13 @@ public class ApiServiceImpl implements ApiService {
     						
             				list = mapper.getWay2In(goMap);																// (마지막정류장 - 정류장 XY좌표)
             				vList = cUtil.connectionURL(cUtil.makeParam(list));										// RP엔진 경로
-            				
             				goMap.put("ROUTE_TM", list.get(0).get("BOARDING_TM"));									// 마지막 정류장 탑승시간(=출발시간)
             				goMap.put("TOTAL_TM", vList.get(0).getTotalTm());											// (기마지막정류장점 - 정류장 소요시간)
             				
             				goMap.put("BOARDING_TM", tUtil.getBoardingTm4Tm(goMap));
+            				/* 승차정류장 - (경유지) - 하차정류장 소요거리 및 소요시간 */
+        		    		goMap.put("TOTAL_TIME", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY(goMap))).get(0).getTotalTm());
+        		    		goMap.put("TOTAL_DISTANCE", cUtil.connectionURL(cUtil.makeParam(mapper.getUserXY(goMap))).get(0).getTotalDist());
             	    		fMap.put("2", mapper.getSche(goMap));
             	    		
             	    		fList.add(fMap);

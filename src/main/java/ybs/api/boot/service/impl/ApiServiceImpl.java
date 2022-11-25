@@ -43,7 +43,15 @@ public class ApiServiceImpl implements ApiService {
      * @return list<map>
      */
     @Override
-    public List<HashMap<String,Object>> getSttn(HashMap<String, Object> map) { return mapper.getSttn(map); }
+    public List<HashMap<String,Object>> getSttn(HashMap<String, Object> map) { 
+    	
+    	String gubun[] = null;
+    	gubun = String.valueOf(map.get("GUBUN")).split(",");
+    	map.put("GUBUN", gubun);
+    	
+    	return mapper.getSttn(map); 
+    	
+    }
 
     /**
      * 2. 탑승 조건 기준 배차 정보 조회

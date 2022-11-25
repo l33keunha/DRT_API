@@ -5,11 +5,30 @@
 <mapper namespace="ybs.api.boot.service.impl.ApiMapper">
 
     <select id="getSttn" parameterType="Map" resultType="Map">
-        SELECT *
+        SELECT 
+        		AREA_NM
+				,AREA_CD
+				,RUN_AREA_NM
+				,RUN_AREA_CD
+				,NODE_ID
+				,STTN_NM
+				,STTN_ID
+				,STTN_X
+				,STTN_Y
+				,GUBUN
         FROM
             DRP_STTN
         WHERE 1=1
           AND RUN_AREA_CD= #{RUN_AREA_CD}
+          <if test='RUN_AREA_CD.equals("1")'>
+          		AND GUBUN = '0'
+          </if>
+          <if test= 'RUN_AREA_CD.equals("2")'>
+          		AND GUBUN IN
+          		    <foreach collection="GUBUN" item="item" index="index" open="(" close=")" separator=",">
+				    #{item}
+				    </foreach>
+          </if>
           ORDER BY NODE_ID 
     </select>
 

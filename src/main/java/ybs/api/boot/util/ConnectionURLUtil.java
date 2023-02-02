@@ -28,7 +28,6 @@ import ybs.api.boot.service.xmlVO;
 *
 *  Copyright (C) by YBS All right reserved.
 */
-
 public class ConnectionURLUtil {
 
 	

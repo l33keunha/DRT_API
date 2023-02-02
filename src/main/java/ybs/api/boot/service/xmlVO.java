@@ -39,6 +39,8 @@ public class xmlVO {
     private String coordinates;
     private String turnType;
     private int pointIndex;
+    private String nodeId;
+    private String nodeName;
     private String pointType;
     private int lineIndex;
     private int distance;

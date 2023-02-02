@@ -5,11 +5,30 @@
 <mapper namespace="ybs.api.boot.service.impl.ApiMapper">
 
     <select id="getSttn" parameterType="Map" resultType="Map">
-        SELECT *
+        SELECT 
+        		AREA_NM
+				,AREA_CD
+				,RUN_AREA_NM
+				,RUN_AREA_CD
+				,NODE_ID
+				,STTN_NM
+				,STTN_ID
+				,STTN_X
+				,STTN_Y
+				,GUBUN
         FROM
             DRP_STTN
         WHERE 1=1
           AND RUN_AREA_CD= #{RUN_AREA_CD}
+          <if test='RUN_AREA_CD.equals("1")'>
+          		AND GUBUN = '0'
+          </if>
+          <if test= 'RUN_AREA_CD.equals("2")'>
+          		AND GUBUN IN
+          		    <foreach collection="GUBUN" item="item" index="index" open="(" close=")" separator=",">
+				    #{item}
+				    </foreach>
+          </if>
           ORDER BY NODE_ID 
     </select>
 
@@ -17,6 +36,7 @@
         SELECT
             SDATE
              ,ST_TM
+             ,#{BOARDING_TM} BOARDING_TM
              ,AREA_NM
              ,AREA_CD
              ,RUN_AREA_NM
@@ -34,25 +54,110 @@
              ,T_NODE_ID
              ,MAX_TM
              ,MAX_USER
+             ,#{TOTAL_TIME} TOTAL_TIME
+             ,#{TOTAL_DISTANCE} TOTAL_DISTANCE
         FROM
             DRP_ROUTE_SCHE
         WHERE 1=1
           AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
-          AND ST_TM LIKE #{ST_TM}||'%'
+          AND ST_TM = SUBSTR(#{ST_TM},1,2) || '0000'
           AND ROUTE_ID =  #{ROUTE_ID}
     </select>
-
-    <select id="getUserMast" parameterType="Map" resultType="Map">
-        SELECT *
-        FROM DRP_USER_MAST
-        WHERE 1=1
+    
+    <select id="findUser"  parameterType="Map" resultType="integer">
+	    SELECT COUNT(*)
+		FROM DRP_USER_MAST
+		WHERE 1=1
           AND ROUTE_ID =  #{ROUTE_ID}
-          AND ROUTE_DIR = #{ROUTE_DIR}
           AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
           AND ST_TM LIKE SUBSTR(#{ST_TM},1,2) || '%'
     </select>
     
-    <select id="getUserXY" parameterType="Map" resultType="Map">
+    <select id ="findSttn" parameterType="Map" resultType="string">
+		SELECT BOARDING_TM
+		FROM
+		(
+			SELECT ROWNUM, BOARDING_TM 
+			FROM DRP_USER_MAST 
+			WHERE 1=1
+			  AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
+			  AND ST_TM LIKE SUBSTR(#{ST_TM},1,2) || '%'
+			  AND ROUTE_ID =  #{ROUTE_ID}
+		      AND STTN_IN_ID = #{STTN_IN_ID}
+			 ORDER BY BOARDING_TM 
+		)
+		WHERE ROWNUM = 1
+    </select>
+    
+    <select id ="findSttn_BONUS" parameterType="Map" resultType="integer">
+		SELECT COUNT(*)
+		FROM DRP_USER_MAST 
+		WHERE 1=1
+			AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
+			AND ST_TM LIKE SUBSTR(#{ST_TM},1,2) || '%'
+			AND ROUTE_ID =  #{ROUTE_ID}
+		    AND STTN_IN_ID = #{STTN_IN_ID}
+    </select>
+    
+    <select id="getSt2In"  parameterType="Map" resultType="Map">
+		SELECT '1'RANK, ST_X STTN_X, ST_Y STTN_Y
+		FROM DRP_ROUTE 
+		WHERE 1=1
+			AND ROUTE_ID = #{ROUTE_ID}
+		UNION
+		SELECT '2' RANK, STTN_X, STTN_Y 
+		FROM DRP_STTN 
+		WHERE 1=1
+			AND STTN_ID = #{STTN_IN_ID}
+		ORDER BY RANK
+    </select>
+    
+    <select id="getWay2In"  parameterType="Map" resultType="Map">
+	    SELECT A.RANK, A.STTN_IN_ID, B.STTN_X, B.STTN_Y, A.BOARDING_TM
+		FROM
+			(
+				SELECT '1' RANK, STTN_IN_ID, BOARDING_TM
+				FROM
+				(
+					SELECT STTN_IN_ID, BOARDING_TM
+					FROM DRP_USER_MAST 
+					WHERE 1=1
+					  AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
+		  			  AND BOARDING_TM LIKE SUBSTR(#{ST_TM},1,2) || '%'
+					  AND ROUTE_ID = #{ROUTE_ID}
+					ORDER BY BOARDING_TM DESC
+				)
+				WHERE ROWNUM = 1
+				UNION 
+				SELECT '2'RANK, #{STTN_IN_ID} STTN_IN_ID, '0' BOARDING_TM
+				FROM DRP_USER_MAST 
+				ORDER BY RANK
+			) A, DRP_STTN B
+			WHERE 1=1
+			AND A.STTN_IN_ID = B.STTN_ID
+			ORDER BY RANK 
+	</select>
+    
+    <select id="getSt_XY" parameterType="Map" resultType="Map">
+    	SELECT ST_X, ST_Y 
+		FROM DRP_ROUTE
+		WHERE 1=1
+			AND ROUTE_ID =  #{ROUTE_ID}
+			AND ROUTE_DIR = #{ROUTE_DIR}
+    </select>
+
+    <select id="getUserMast" parameterType="Map" resultType="Map">
+        SELECT DISTINCT A.*, B.DRIVER_NM 
+        FROM DRP_USER_MAST A, DRP_ROUTE_SCHE B
+        WHERE 1=1
+          AND A.ROUTE_ID = B.ROUTE_ID
+          AND A.ROUTE_ID =  #{ROUTE_ID}
+          AND A.ROUTE_DIR = #{ROUTE_DIR}
+          AND A.SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
+          AND A.ST_TM LIKE SUBSTR(#{ST_TM},1,2) || '%'
+    </select>
+    
+     <select id="getUserXY" parameterType="Map" resultType="Map">
     	SELECT 'STTN_IN_ID' STTN_ID_V, STTN_ID, STTN_X, STTN_Y
 		FROM DRP_STTN
 		WHERE 1=1
@@ -62,6 +167,24 @@
 		FROM DRP_STTN
 		WHERE 1=1
 			AND STTN_ID = #{STTN_OUT_ID}
+    </select>
+    
+     <select id="getUserXY_2" parameterType="Map" resultType="Map">
+		SELECT STTN_IN_ID, B.STTN_X, B.STTN_Y ,BOARDING_TM, B.NODE_ID, A.STTN_IN_NM 
+		FROM DRP_USER_MAST A, DRP_STTN B
+		WHERE 1=1
+			AND A.STTN_IN_ID = B.STTN_ID 
+		    AND ROUTE_ID = #{ROUTE_ID}
+		    AND STTN_IN_ID = #{STTN_IN_ID}
+		    AND BOARDING_TM = #{BOARDING_TM}
+		UNION ALL
+		SELECT DISTINCT STTN_OUT_ID, B.STTN_X, B.STTN_Y, NULL BOARDING_TM, B.NODE_ID, A.STTN_OUT_NM 
+		FROM DRP_USER_MAST A, DRP_STTN B
+		WHERE 1=1
+			AND A.STTN_OUT_ID = B.STTN_ID
+		    AND ROUTE_ID = #{ROUTE_ID}
+		    AND STTN_OUT_ID = #{STTN_OUT_ID}
+		ORDER BY BOARDING_TM 
     </select>
 
     <insert id="setUser" parameterType="Map">
@@ -92,13 +215,14 @@
 			,USER_NM
 			,USER_PHONE
 			,REV_TYPE
+			,BOARDING_TM
 		) 
 		SELECT
 			CONCAT(CONCAT(CONCAT(TO_CHAR(SYSDATE,'YYYYMMDD'), TO_CHAR(SYSDATE,'HH24MMSS')),'U'), LPAD(USER_NO.NEXTVAL,3,0)) USER_NO 
 			,SYSDATE
 			,TO_CHAR(SYSDATE, 'HH24MMSS') REV_TM
 			,SDATE
-			,ST_TM
+			,#{ST_TM}
 			,A.AREA_NM
 			,A.AREA_CD
 			,A.RUN_AREA_NM
@@ -120,6 +244,7 @@
 			,#{USER_NM} USER_NM
 			,#{USER_PHONE} USER_PHONE
 			,#{REV_TYPE} REV_TYPE
+			,#{BOARDING_TM} REV_TYPE
 		FROM
 		(
 			SELECT 
@@ -231,7 +356,7 @@
           		AND ROUTE_DIR = #{ROUTE_DIR}
     </select>
 
-    <select id="getWayPoint" parameterType="Map" resultType="Map">
+    <select id="getWayPoint_old" parameterType="Map" resultType="Map">
         SELECT NODE_ID, STTN_X, STTN_Y, USER_IN_CNT, USER_OUT_CNT
         FROM
             (
@@ -283,6 +408,27 @@
         WHERE 1=1
           AND F1.STTN_ID = F2.STTN_ID
         ORDER BY NODE_ID
+    </select>
+    
+    <select id="getWayPoint" parameterType="Map" resultType="Map">
+	    SELECT STTN_IN_ID, B.STTN_X, B.STTN_Y ,BOARDING_TM 
+		FROM DRP_USER_MAST A, DRP_STTN B
+		WHERE 1=1
+			AND A.STTN_IN_ID = B.STTN_ID 
+			AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
+		    AND BOARDING_TM LIKE SUBSTR(#{ST_TM},1,2) || '%'
+			AND ROUTE_ID =#{ROUTE_ID}
+		    AND ROUTE_DIR = #{ROUTE_DIR}
+		UNION ALL
+		SELECT DISTINCT STTN_OUT_ID, B.STTN_X, B.STTN_Y, NULL BOARDING_TM 
+		FROM DRP_USER_MAST A, DRP_STTN B
+		WHERE 1=1
+			AND A.STTN_OUT_ID = B.STTN_ID
+			AND SDATE = TO_DATE(#{SDATE}, 'YYYYMMDD')
+		    AND BOARDING_TM LIKE SUBSTR(#{ST_TM},1,2) || '%'
+		    AND ROUTE_ID =#{ROUTE_ID}
+		    AND ROUTE_DIR = #{ROUTE_DIR}
+		ORDER BY BOARDING_TM
     </select>
 
 	<select id="getScheNo" parameterType="Map" resultType="string">
@@ -377,6 +523,8 @@
                 #{vo.coordinates, jdbcType=VARCHAR},
                 #{vo.turnType, jdbcType=VARCHAR},
                 #{vo.pointIndex, jdbcType=INTEGER},
+                #{vo.nodeId, jdbcType=VARCHAR},
+                #{vo.nodeName, jdbcType=VARCHAR},
                 #{vo.pointType, jdbcType=VARCHAR},
                 #{vo.lineIndex, jdbcType=INTEGER},
                 #{vo.distance, jdbcType=INTEGER},

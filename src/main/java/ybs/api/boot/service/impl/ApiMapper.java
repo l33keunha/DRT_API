@@ -36,12 +36,25 @@ public interface ApiMapper {
     List<HashMap<String, Object>> getSttn(HashMap<String, Object> map);
 
     /**
+     * 2. 탑승 조건 기준 배차 정보 조회 : 기점 정류장 - 예약자 승차 정류장 소요시간
+     * @param List<Map>
+     * @return map
+     */
+    List<HashMap<String, Object>> getSt2In(HashMap<String, Object> map);
+    /**
      * 2. 탑승 조건 기준 배차 정보 조회
-     * @param map
+     * @param List<Map>
      * @return map
      */
     HashMap<String, Object> getSche(HashMap<String, Object> map);
-
+    int findUser(HashMap<String, Object> map);
+    HashMap<String, Object> getSt_XY(HashMap<String, Object> map);
+    HashMap<String, Object> getFN_XY(HashMap<String, Object> map);
+    String findSttn(HashMap<String, Object> map);
+    List<HashMap<String, Object>> getWay2In(HashMap<String, Object> map);
+    List<HashMap<String, Object>> getUserXY_2(HashMap<String, Object> goMap);
+    int findSttn_BONUS(HashMap<String, Object> goMap);
+    
     /**
      * 3. 운전자가 운행할 차량의 예약자 조회
      * @param map
@@ -88,6 +101,7 @@ public interface ApiMapper {
      * @return List<Map>
      */
     List<HashMap<String, Object>> getWayPoint(HashMap<String, Object> map);
+    List<HashMap<String, Object>> getWayPoint_old(HashMap<String, Object> map);
 
     /**
      * 9. 운행 시작 및 경로 탐색 : 출,도착지 xy 조회
@@ -133,6 +147,20 @@ public interface ApiMapper {
      * @return List<Map>
      */
     List<HashMap<String, Object>> getHist(HashMap<String, Object> map);
+
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
 
 
 }

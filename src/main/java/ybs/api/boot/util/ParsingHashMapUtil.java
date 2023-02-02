@@ -46,6 +46,8 @@ public class ParsingHashMapUtil {
                 vo.setCoordinates(String.valueOf(coord.get("coordinates")));
                 
                 vo.setTurnType(String.valueOf(obj.get("turnType")));
+                vo.setNodeId(String.valueOf(obj.get("nodeid")));
+                vo.setNodeName(String.valueOf(obj.get("nodename")));
                 
             } else if(("POINT").equals(obj.get("nodeType"))){
                 JSONObject coord = (JSONObject) obj.get("Point");
@@ -53,6 +55,8 @@ public class ParsingHashMapUtil {
 
                 vo.setPoint("Y");
                 vo.setPointIndex((int) obj.get("pointIndex"));
+                vo.setNodeId(String.valueOf(obj.get("nodeid")));
+                vo.setNodeName(String.valueOf(obj.get("nodename")));
                 vo.setPointType(String.valueOf(obj.get("pointType")));
                 
             } else if(("LINE").equals(obj.get("nodeType"))){

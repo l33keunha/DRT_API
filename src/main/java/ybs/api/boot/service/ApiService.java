@@ -17,8 +17,9 @@ public interface ApiService {
      * 2. 탑승 조건 기준 배차 정보 조회
      * @param map
      * @return map
+     * @throws Exception 
      */
-    HashMap<String, Object> getSche(HashMap<String, Object> map);
+    List<HashMap<String, Object>> getSche(HashMap<String, Object> map) throws Exception;
 
     /**
      * 3. 운전자가 운행할 차량의 예약자 조회

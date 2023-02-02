@@ -5,6 +5,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+*
+* @Class Name : parsingJSONUtil.java
+* @Description : 경로탐색 엔진 호출_예약자의 출도착지간의 소요시간 및 거리 리턴
+* @Modification Information
+*
+*  수정일			수정자		수정내용
+*  -------------	---------	-------------------------------
+*  2022. 10. 25.				최초생성
+*
+* @author 이근하
+* @since 2022. 10. 25.
+* @version 1.0
+* @see
+*
+*  Copyright (C) by YBS All right reserved.
+*/
+
 public class TimeUtil {
 
 

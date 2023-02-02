@@ -11,6 +11,24 @@ import java.util.List;
 
 import ybs.api.boot.service.xmlVO;
 
+/**
+*
+* @Class Name : ConnectionURLUtil.java
+* @Description : 경로탐색 엔진 호출_예약 건 경유지로 적용하여 경로탐색
+* @Modification Information
+*
+*  수정일			수정자		수정내용
+*  -------------	---------	-------------------------------
+*  2022. 10. 25.				최초생성
+*
+* @author 이근하
+* @since 2022. 10. 25.
+* @version 1.0
+* @see
+*
+*  Copyright (C) by YBS All right reserved.
+*/
+
 public class ConnectionURLUtil {
 
 	

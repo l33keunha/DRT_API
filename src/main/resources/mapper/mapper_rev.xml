@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ybs.api.boot.rev.service.impl.RevApiMapper">
+
+	
+    <select id="selectSttn"  resultType="Map">
+		SELECT *
+		FROM N_DRP_STTN 
+		WHERE 1=1
+			AND ROUTE_ID = #{ROUTE_ID}
+			AND STTN_SEQ <![CDATA[ <= ]]> 13
+		ORDER BY STTN_SEQ 
+    </select>
+    
+    <select id="selectLink" resultType = "Map">
+		SELECT "link_id" 
+		FROM N_RP_DATA_LINK
+		WHERE 1=1 
+			AND "link_id" IN ('4850000034','4850000033','4860000049','4850000102','4860000038','4860000037','4850000036')
+    </select>
+    
+    
+    
+    
+    
+    
+	<select id="submitRouteId" parameterType="Map" resultType="Map">
+		SELECT NODE_ID, STTN_SEQ, STTN_NM, STTN_X, STTN_Y
+		FROM N_DRP_STTN 
+		WHERE 1=1
+			AND ROUTE_ID = #{routeId}
+			AND sttn_seq BETWEEN 0 AND 13
+	</select>
+	
+	
+    <select id="getSttnCoordArr" resultType="Double">
+		SELECT STTN_COORD
+		FROM
+		(
+		SELECT STTN_X_RP STTN_COORD, STTN_SEQ, '1' ORDER_NUM
+		FROM 
+		(
+			SELECT *
+			FROM
+			(
+				SELECT 
+					*	
+				FROM N_DRP_STTN 
+				WHERE 1=1
+					AND ROUTE_ID = '2'
+					ORDER BY STTN_ID 
+			) A
+		)
+		WHERE 1=1
+			AND STTN_SEQ IN
+			<foreach collection="sttnList" item="item" index="index" open="(" close=")" separator=",">
+				#{item}
+			</foreach>
+		UNION ALL
+		SELECT STTN_Y_RP STTN_COORD, STTN_SEQ, '2' ORDER_NUM
+		FROM 
+		(
+			SELECT *
+			FROM
+			(
+				SELECT 
+					*	
+				FROM N_DRP_STTN 
+				WHERE 1=1
+					AND ROUTE_ID = '2'
+					ORDER BY STTN_ID 
+			) A
+		)
+		WHERE 1=1
+			AND STTN_SEQ IN
+			<foreach collection="sttnList" item="item" index="index" open="(" close=")" separator=",">
+				#{item}
+			</foreach>
+		ORDER BY STTN_SEQ, ORDER_NUM
+		)
+    </select>
+    
+    <select id="getSttnCoordList" resultType="Map">
+	    SELECT STTN_SEQ, STTN_X_RP, STTN_Y_RP
+		FROM 
+		(
+			SELECT *
+			FROM
+			(
+				SELECT 
+					*	
+				FROM N_DRP_STTN 
+				WHERE 1=1
+					AND ROUTE_ID = '2'
+					ORDER BY STTN_ID 
+			) A
+		)
+		WHERE 1=1
+			AND STTN_SEQ IN
+			<foreach collection="sttnList" item="item" index="index" open="(" close=")" separator=",">
+				#{item}
+			</foreach>
+		ORDER BY STTN_SEQ
+    </select>
+    
+     <insert id="setPath" parameterType="ybs.api.boot.org.service.xmlVO">
+        <foreach collection="rp_result" item="vo" separator=" " open="INSERT ALL" close ="SELECT * FROM DUAL">
+            INTO DRP_PATH VALUES(
+                #{SCHE_NO},
+                #{SCHE_SUB_NO},
+                NULL,
+                #{vo.totalDist, jdbcType=INTEGER},
+                #{vo.totalTm, jdbcType=INTEGER},
+                #{vo.index, jdbcType=INTEGER},
+                #{vo.name, jdbcType=VARCHAR},
+                #{vo.nodeType, jdbcType=VARCHAR},
+                #{vo.point, jdbcType=VARCHAR},
+                #{vo.lineString, jdbcType=VARCHAR},
+                #{vo.coordinates, jdbcType=VARCHAR},
+                #{vo.turnType, jdbcType=VARCHAR},
+                #{vo.pointIndex, jdbcType=INTEGER},
+                #{vo.nodeId, jdbcType=VARCHAR},
+                #{vo.nodeName, jdbcType=VARCHAR},
+                #{vo.pointType, jdbcType=VARCHAR},
+                #{vo.lineIndex, jdbcType=INTEGER},
+                #{vo.distance, jdbcType=INTEGER},
+                #{vo.time, jdbcType=INTEGER},
+                #{vo.roadType, jdbcType=VARCHAR},
+                #{vo.facilityType, jdbcType=VARCHAR},
+                #{vo.linkId, jdbcType=VARCHAR},
+                #{vo.costdstn, jdbcType=VARCHAR},
+                #{vo.sttnSeq, jdbcType=INTEGER}
+            )
+        </foreach>
+    </insert>
+    
+    <select id="getSttnTime"  resultType="Map">
+		SELECT AAA.NODE_ID, AAA.NODE_NAME, AAA.STTN_SEQ
+			,TO_NUMBER(ROUND(CEIL(SUM(AAA.TOTAL_TM) OVER (PARTITION BY FV)/60),0)) TOTAL_TM
+			,AAA.TOTAL_DIST
+			,SUM(TIME_SUM_MM) OVER(ORDER BY "INDEX") TIME_SUM_MMM
+			,SUM(DIST_SUM) OVER(ORDER BY "INDEX") DIST_SUM_M
+		FROM
+		(
+			SELECT AA.*
+				,SUM("TIME") OVER (PARTITION BY FV) AS TIME_SUM_SS
+				,TO_NUMBER(ROUND(CEIL(SUM("TIME") OVER (PARTITION BY FV)/60),0)) AS TIME_SUM_MM
+				,SUM(DISTANCE) OVER (PARTITION BY FV) AS DIST_SUM
+			FROM 
+			(
+				SELECT A.*
+					,FIRST_VALUE (NEW_COLUMN IGNORE NULLS) OVER (ORDER BY "INDEX" ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) AS fv
+				FROM 
+				(
+					SELECT 
+					    SCHE_NO,
+					    TOTAL_TM,
+					    TOTAL_DIST,
+					    "INDEX",
+					    NAME,
+					    NODE_TYPE,
+					    POINT_INDEX,
+					    NODE_ID,
+					    NODE_NAME,
+					    LINE_INDEX,
+					    DISTANCE,
+					    "TIME",
+					    STTN_SEQ,
+					    CASE WHEN POINT_INDEX = 1 THEN 
+					        RANK() OVER (ORDER BY "INDEX")
+					        ELSE null 
+					    END AS NEW_COLUMN
+					FROM DRP_PATH
+					WHERE 1=1
+					    AND SCHE_NO = #{scheNo}
+	    			    AND SCHE_SUB_NO = #{i}
+				)A
+			)AA
+		)AAA
+		WHERE 1=1
+			AND POINT_INDEX =1
+			AND STTN_SEQ != 999
+    </select>
+    
+    <select id="getResultLink" resultType = "Map">
+	    SELECT LINK_ID 
+		FROM DRP_PATH 
+		WHERE 1=1
+		    AND SCHE_NO = #{scheNo}
+			AND SCHE_SUB_NO = #{i}
+			AND LINK_ID IS NOT NULL
+		ORDER BY "INDEX" 
+    </select>
+    
+     <insert id="setUserList" parameterType="java.util.Map">
+        <foreach collection="userList" item="vo" separator=" " open="INSERT ALL" close ="SELECT * FROM DUAL">
+            INTO N_DRP_USER_MAST VALUES(
+                #{scheNo},
+                #{vo.userNo},
+                #{vo.flag, jdbcType=INTEGER},
+                #{vo.orderTm, jdbcType=INTEGER},
+                2,
+                #{vo.begDataSttnSeq, jdbcType=INTEGER},
+                #{vo.begDataSttnNm, jdbcType=VARCHAR},
+                #{vo.endDataSttnSeq, jdbcType=INTEGER},
+                #{vo.endDataSttnNm, jdbcType=VARCHAR},
+                #{vo.hhList, jdbcType=INTEGER},
+                #{vo.mmList, jdbcType=INTEGER},
+                #{vo.timeSumMmm, jdbcType=INTEGER},
+                NULL,
+                #{vo.distSumM, jdbcType=INTEGER},
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                #{vo.totalTm, jdbcType=INTEGER},
+                #{vo.totalDist, jdbcType=INTEGER},
+                NULL,
+                NULL,
+                SYSDATE
+            )
+        </foreach>
+    </insert>
+    
+    <select id="getUserListForUpdate"  resultType="Map">
+		SELECT 
+			TM1.*
+			,TM2.TIME_SUM_MMM TIME_SUM_MMM_END_ORG
+			,TM2.DIST_SUM_M DIST_SUM_M_END_ORG
+			,TM2.TIME_SUM_MMM - TM1.TIME_SUM_MMM_ORG LONG_TM_ORG
+			,TM2.DIST_SUM_M - TM1.DIST_SUM_M_ORG LONG_DIST_ORG
+			,TM2.TOTAL_TM_ORG
+			,TM2.TOTAL_DIST_ORG
+		FROM
+		(
+			SELECT T2.SCHE_NO
+					,T2.USER_NO
+					,T2.BEG_DATA_STTN_SEQ
+					,T2.END_DATA_STTN_SEQ
+					,T2.TIME_SUM_MMM 
+					,T1.TIME_SUM_MMM AS TIME_SUM_MMM_END
+					,T1.TIME_SUM_MMM-T2.TIME_SUM_MMM LONG_TM
+					,T2.DIST_SUM_M
+					,T1.DIST_SUM_M AS DIST_SUM_M_END
+					,T1.DIST_SUM_M -T2.DIST_SUM_M LONG_DIST
+					,T3.TIME_SUM_MMM TIME_SUM_MMM_ORG
+					,T3.DIST_SUM_M DIST_SUM_M_ORG
+			FROM
+			(
+			SELECT AAA.NODE_ID, AAA.NODE_NAME, AAA.STTN_SEQ
+				,SUM(TIME_SUM_MM) OVER(ORDER BY "INDEX") TIME_SUM_MMM
+				,SUM(DIST_SUM) OVER(ORDER BY "INDEX") DIST_SUM_M
+			FROM
+			(
+				SELECT AA.*
+					,SUM("TIME") OVER (PARTITION BY FV) AS TIME_SUM_SS
+					,TO_NUMBER(ROUND(CEIL(SUM("TIME") OVER (PARTITION BY FV)/60),0)) AS TIME_SUM_MM
+					,SUM(DISTANCE) OVER (PARTITION BY FV) AS DIST_SUM
+				FROM 
+				(
+					SELECT A.*
+						,FIRST_VALUE (NEW_COLUMN IGNORE NULLS) OVER (ORDER BY "INDEX" ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) AS fv
+					FROM 
+					(
+						SELECT 
+						    SCHE_NO,
+						    "INDEX",
+						    NAME,
+						    NODE_TYPE,
+						    POINT_INDEX,
+						    NODE_ID,
+						    NODE_NAME,
+						    LINE_INDEX,
+						    DISTANCE,
+						    "TIME",
+						    STTN_SEQ,
+						    CASE WHEN POINT_INDEX = 1 THEN 
+						        RANK() OVER (ORDER BY "INDEX")
+						        ELSE null 
+						    END AS NEW_COLUMN
+						FROM DRP_PATH
+						WHERE 1=1
+						    AND SCHE_NO = #{scheNo}
+						    AND SCHE_SUB_NO = #{i}
+					)A
+				)AA
+			)AAA
+			WHERE 1=1
+				AND POINT_INDEX =1
+				AND STTN_SEQ != 999
+			) T1,
+			(
+			SELECT *
+			FROM N_DRP_USER_MAST 
+			WHERE 1=1
+			    AND SCHE_NO = #{scheNo}
+				AND ORDER_TM = #{i}
+			) T2,
+			(
+			SELECT *
+			FROM N_DRP_USER_MAST 
+			WHERE 1=1
+			    AND SCHE_NO = 'master'
+			) T3
+			WHERE 1=1
+				AND T1.STTN_SEQ = T2.END_DATA_STTN_SEQ
+				AND T2.BEG_DATA_STTN_SEQ = T3.BEG_DATA_STTN_SEQ
+		)TM1,
+		(
+		SELECT *
+		FROM N_DRP_USER_MAST 
+		WHERE 1=1
+		    AND SCHE_NO = 'master'
+		) TM2
+		WHERE 1=1
+			AND TM1.END_DATA_STTN_SEQ = TM2.BEG_DATA_STTN_SEQ
+    </select>
+    
+	<update id="updateUserList" parameterType="java.util.Map">
+        UPDATE N_DRP_USER_MAST 
+        SET 
+            TIME_SUM_MMM_END = #{map.TIME_SUM_MMM_END, jdbcType=INTEGER},
+            DIST_SUM_M_END = #{map.DIST_SUM_M_END, jdbcType=INTEGER},
+            LONG_TM = #{map.LONG_TM, jdbcType=INTEGER},
+            LONG_DIST = #{map.LONG_DIST, jdbcType=INTEGER},
+            TIME_SUM_MMM_ORG = #{map.TIME_SUM_MMM_ORG, jdbcType=INTEGER},
+            TIME_SUM_MMM_END_ORG = #{map.TIME_SUM_MMM_END_ORG, jdbcType=INTEGER},
+            DIST_SUM_M_ORG = #{map.DIST_SUM_M_ORG, jdbcType=INTEGER},
+            DIST_SUM_M_END_ORG = #{map.DIST_SUM_M_END_ORG, jdbcType=INTEGER},
+            LONG_TM_ORG = #{map.LONG_TM_ORG, jdbcType=INTEGER},
+            LONG_DIST_ORG = #{map.LONG_DIST_ORG, jdbcType=INTEGER},
+            TOTAL_TM_ORG = #{map.TOTAL_TM_ORG, jdbcType=INTEGER},
+            TOTAL_DIST_ORG = #{map.TOTAL_DIST_ORG, jdbcType=INTEGER}
+        WHERE 
+            SCHE_NO = #{scheNo} 
+            AND ORDER_TM = #{i} 
+            AND USER_NO = #{userNo}
+	</update>
+	
+	<select id="getUserList" resultType="Map">
+		SELECT 
+			SCHE_NO
+			,USER_NO
+			,FLAG
+			,ORDER_TM
+			,ROUTE_ID
+			,BEG_DATA_STTN_SEQ
+			,BEG_DATA_STTN_NM
+			,END_DATA_STTN_SEQ
+			,END_DATA_STTN_NM
+			,REV_HH
+			,REV_MM
+			,TIME_SUM_MMM
+			,TIME_SUM_MMM_END
+			,CASE WHEN ORDER_TM = 10 
+				 	THEN TIME_SUM_MMM - REV_MM
+				 	ELSE TIME_SUM_MMM + (60-REV_MM)
+				 	END WAIT_TM
+			,DIST_SUM_M
+			,DIST_SUM_M_END
+			,LONG_TM
+			,LONG_DIST
+			,TIME_SUM_MMM_ORG
+			,TIME_SUM_MMM_END_ORG
+			,DIST_SUM_M_ORG
+			,DIST_SUM_M_END_ORG
+			,LONG_TM_ORG
+			,LONG_DIST_ORG
+			,TOTAL_TM
+			,TOTAL_DIST
+			,TOTAL_TM_ORG
+			,TOTAL_DIST_ORG
+			,REV_DATA
+		FROM N_DRP_USER_MAST  
+		WHERE 1=1
+			AND SCHE_NO = #{scheNo} 
+	</select>
+	
+	<select id="getUserListExcel" resultType="Map">
+		SELECT 
+			CONCAT(USER_NO+1, '번') USER_NO
+			,CONCAT(ORDER_TM, '시') ORDER_TM
+			,BEG_DATA_STTN_NM
+			,END_DATA_STTN_NM
+			,CONCAT(CONCAT(CONCAT(REV_HH, '시 '), REV_MM), '분') REV_TM
+			,CONCAT(CONCAT('10시 ', TIME_SUM_MMM_ORG), '분') TIME_SUM_MMM_ORG
+			,CONCAT(CONCAT(CONCAT(ORDER_TM, '시 '), TIME_SUM_MMM), '분') TIME_SUM_MMM
+			,CASE WHEN ORDER_TM = 10 
+				 	THEN CONCAT(TIME_SUM_MMM - REV_MM, '분')
+				 	ELSE CONCAT(TIME_SUM_MMM + (60-REV_MM), '분')
+				 	END WAIT_TIME
+			,CONCAT(LONG_TM_ORG, '분') LONG_TM_ORG
+			,CONCAT(LONG_TM, '분') LONG_TM
+			,CONCAT(LONG_DIST_ORG, 'm') LONG_DIST_ORG
+			,CONCAT(LONG_DIST, 'm') LONG_DIST
+			,CONCAT(TOTAL_TM_ORG, '분') TOTAL_TM_ORG
+			,CONCAT(TOTAL_TM, '분') TOTAL_TM
+			,CONCAT(TOTAL_DIST_ORG, 'm') TOTAL_DIST_ORG
+			,CONCAT(TOTAL_DIST, 'm') TOTAL_DIST
+		FROM N_DRP_USER_MAST  
+		WHERE 1=1
+			AND SCHE_NO = #{scheNo} 
+	</select>
+
+
+</mapper>

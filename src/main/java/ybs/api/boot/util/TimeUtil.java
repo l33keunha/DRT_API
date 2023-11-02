@@ -1,9 +1,12 @@
 package ybs.api.boot.util;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalTime;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
+
+import org.springframework.stereotype.Component;
 
 /**
 *
@@ -22,6 +25,8 @@ import java.util.List;
 *
 *  Copyright (C) by YBS All right reserved.
 */
+
+@Component
 public class TimeUtil {
 
 
@@ -126,6 +131,21 @@ public class TimeUtil {
 		LocalTime BOARDINGLocalTime = ROUTELocalTime.plusSeconds((Integer)(map.get("TOTAL_TM")));
 		
 		return String.valueOf(BOARDINGLocalTime).replaceAll(":", "");
+	}
+	
+	public String getScheNo() {
+		
+		 Date date = new Date();
+	        
+        // Date 객체를 Timestamp로 변환합니다.
+        Timestamp timestamp = new Timestamp(date.getTime());
+        
+        // Timestamp를 문자열로 변환합니다.
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        String scheNo = sdf.format(timestamp);
+        
+        System.out.println("경로탐색 운행번호 : " +  scheNo);
+		return scheNo;
 	}
 	
 }

@@ -1,4 +1,4 @@
-package ybs.api.boot.service;
+package ybs.api.boot.org.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;

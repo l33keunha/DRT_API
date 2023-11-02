@@ -1,7 +1,7 @@
-package ybs.api.boot.service.impl;
+package ybs.api.boot.org.service.impl;
 
 import org.apache.ibatis.annotations.Mapper;
-import ybs.api.boot.service.xmlVO;
+import ybs.api.boot.org.service.xmlVO;
 
 import java.util.ArrayList;
 import java.util.HashMap;

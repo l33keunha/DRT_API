@@ -1,6 +1,5 @@
-package ybs.api.boot.service.impl;
+package ybs.api.boot.org.service.impl;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,8 +7,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ybs.api.boot.service.ApiService;
-import ybs.api.boot.service.xmlVO;
+import ybs.api.boot.org.service.ApiService;
+import ybs.api.boot.org.service.xmlVO;
 import ybs.api.boot.util.ConnectionURLUtil;
 import ybs.api.boot.util.TimeUtil;
 

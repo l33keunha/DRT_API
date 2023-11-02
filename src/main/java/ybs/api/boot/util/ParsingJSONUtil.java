@@ -1,11 +1,11 @@
 package ybs.api.boot.util;
 
-import org.json.XML;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 import java.util.HashMap;
 import java.util.List;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.springframework.stereotype.Component;
 
 /**
  *
@@ -25,6 +25,7 @@ import java.util.List;
  *  Copyright (C) by YBS All right reserved.
  */
 
+@Component
 public class ParsingJSONUtil {
 
         JSONObject json = new JSONObject();

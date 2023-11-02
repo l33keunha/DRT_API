@@ -1,9 +1,14 @@
 spring:
   datasource:
     driver-class-name: oracle.jdbc.OracleDriver
-    url: jdbc:oracle:thin:@192.168.0.51:1521/ORCL
+    # url: jdbc:oracle:thin:@localhost:1521:ORCL
+    # url: jdbc:oracle:thin:@192.168.0.51:1521/ORCL
+    url: jdbc:oracle:thin:@192.168.0.119:1521/xe
     username: drt
     password: drt123
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+     maximum-pool-size: 20
   thymeleaf:
     cache: false
   devtools:
@@ -21,9 +26,9 @@ mybatis:
     map-underscore-to-camel-case: true
     call-setters-on-nulls: true
     default-fetch-size: 500
-
+    
 server:
-  port: 8888
+  port: 9999
   tomcat:
     additional-tld-skip-patterns:  "*.jar"
 

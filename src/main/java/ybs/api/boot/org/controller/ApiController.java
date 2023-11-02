@@ -1,4 +1,4 @@
-package ybs.api.boot.controller;
+package ybs.api.boot.org.controller;
 
 import java.util.HashMap;
 
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ybs.api.boot.service.ApiService;
+import ybs.api.boot.org.service.ApiService;
 import ybs.api.boot.util.ParsingJSONUtil;
 
 
@@ -41,10 +41,10 @@ public class ApiController {
     private ApiService service;
 
     /**
-     * index page 이동
+     * index page 이동/main.do
      */
-    @RequestMapping("/main.do")
-    public String goMain(HttpServletRequest req, HttpServletResponse res){ return "index"; }
+    @RequestMapping("/index_org.do")
+    public String goMain(HttpServletRequest req, HttpServletResponse res){ return "index_org"; }
 
     /**
      * 1. 운행지역 기준 정류장 정보 조회

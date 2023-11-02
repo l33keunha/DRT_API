@@ -2,7 +2,8 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="ybs.api.boot.service.impl.ApiMapper">
+<mapper namespace="ybs.api.boot.org.service.impl.ApiMapper">
+
 
     <select id="getSttn" parameterType="Map" resultType="Map">
         SELECT 
@@ -507,7 +508,7 @@
 		WHERE ROWNUM = 1
 	</select>
 	
-    <insert id="setPath" parameterType="ybs.api.boot.service.xmlVO">
+    <insert id="setPath" parameterType="ybs.api.boot.org.service.xmlVO">
         <foreach collection="vList" item="vo" separator=" " open="INSERT ALL" close ="SELECT * FROM DUAL">
             INTO DRP_PATH VALUES(
                 #{SCHE_NO},

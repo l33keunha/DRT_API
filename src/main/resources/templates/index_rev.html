@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>DRT_test</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <link th:href="@{/css/index_rev.css}" rel="stylesheet" />
+    <script type="text/javascript" th:src="@{/js/index_rev.js}"></script>
+</head>
+<body>
+	<div class="sttn-area">
+		<table>
+		    <tr>
+		        <th>정류장순번</th>
+		        <th>정류장명칭</th>
+		        <th>노드ID</th>
+		        <th>X좌표</th>
+		        <th>Y좌표</th>
+		    </tr>
+		    <tr th:each="item : ${list}">
+		        <td th:text="${item.STTN_SEQ}"></td>
+		        <td th:text="${item.STTN_NM}"></td>
+		        <td th:text="${item.NODE_ID}"></td>
+		        <td th:text="${item.STTN_X}"></td>
+		        <td th:text="${item.STTN_Y}"></td>
+		    </tr>
+		</table>
+	</div>
+	<div class="test-area">
+		<table border="1">
+			<tbody>
+				  <tr>
+			        <td rowspan='3' id="user0">1번 탑승객</td>
+			        <td>출발 정류장</td>
+			        <td colspan='2' ><input type="text"  id=beg0 ></td>
+			    </tr>
+			    <tr>
+			        <td>도착 정류장</td>
+			        <td colspan='2' ><input type="text"  id=end0 ></td>
+			    </tr>
+			    <tr>
+			        <td>예약 시간</td>
+			        <td><select class="hh" id="hh0"></select> 시</td>
+			        <td><select class="mm" id="mm0"></select> 분</td>
+			    </tr>
+			</tbody>
+		</table>
+	</div>
+	<button id="addBtn" onclick="fnAddBtn();">추가</button>
+	<button id="submitBtn" onclick="fnClickBtn();">제출</button>
+</body>
+</html>

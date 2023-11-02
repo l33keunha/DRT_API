@@ -2,310 +2,140 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>DRT API</title>
+    <title>DRT_test</title>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <link th:href="@{/css/main.css}" rel="stylesheet" />
-    <script type="text/javascript" th:src="@{/js/main.js}"></script>
+    <link th:href="@{/css/index.css}" rel="stylesheet" />
+    <script type="text/javascript" th:src="@{/js/index.js}"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/css/ol.css" type="text/css">
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
 </head>
 <body>
-    <div class="header">
-        <div class="logo"><img th:src="@{/img/logo.png}"></div>
-        <div class="title">DRT API 테스트 도구</div>
-        <button id ="xmlBtn" onclick="apiBtn(this)" >
-    </div>
-    <div class="body">
-        <div class="request-get-zone">
-            <li>request-get-zone</li>
-            <div class="request-get-zone-flex">
-                <div class="getSttn">
-                    <p>운행지역 기준 정류장 정보 조회</p>
-                    <span>url : getSttn</span>
-                    <form id="getSttn" method="post">
-                        <table>
-                            <tr>
-                                <td>RUN_AREA_CD</td>
-                                <td><input type="text" name="RUN_AREA_CD" placeholder="int (ex:1)"></td>
-                            </tr>
-                        </table>
-                        <input type="button" id="getSttn" class="examBtn" value="예시" onclick="examBtn(this)">
-                        <input type="button" id="getSttn" class="apiBtn" value="호출" onclick="apiBtn(this)">
-                    </form>
-                </div>
-                <div class="getSche">
-                    <p>탑승 조건 기준 배차 정보 조회</p>
-                    <span>url : getSche</span>
-                    <form id="getSche" method="post">
-                        <table>
-                            <tr>
-                                <td>ROUTE_ID</td>
-                                <td><input type="text" name="ROUTE_ID" placeholder="int (ex:48421050)"></td>
-                            </tr>
-                            <tr>
-                                <td>STTN_IN_ID</td>
-                                <td><input type="text" name="STTN_IN_ID" placeholder="String (ex:4895000002)"></td>
-                            </tr>
-                            <tr>
-                                <td>STTN_OUT_ID</td>
-                                <td><input type="text" name="STTN_OUT_ID" placeholder="String (ex:4895000008)"></td>
-                            </tr>
-                            <tr>
-                                <td>SDATE</td>
-                                <td><input type="text" name="SDATE" placeholder="YYYYMMDD (ex:20221007)"></td>
-                            </tr>
-                            <tr>
-                                <td>ST_TM</td>
-                                <td><input type="text" name="ST_TM" placeholder="HHMMSS(ex:130000)"></td>
-                            </tr>
-                            <tr>
-                                <td>USER_CNT</td>
-                                <td><input type="text" name="USER_CNT" placeholder="int (ex:2)"></td>
-                            </tr>
-                        </table>
-                        <input type="button" id="getSche" class="examBtn" value="예시" onclick="examBtn(this)">
-                        <input type="button" id="getSche" class="apiBtn" value="호출" onclick="apiBtn(this)">
-                    </form>
-                </div>
-                <div class="getUserMast">
-                    <p>운행할 차량의 사전 예약 정보 조회</p>
-                    <span>url : getUserMast</span>
-                    <form id="getUserMast" method="post">
-                        <table>
-                            <tr>
-                                <td>ROUTE_ID</td>
-                                <td><input type="text" name="ROUTE_ID" placeholder="String (ex:48421050)"></td>
-                            </tr>
-                            <tr>
-                                <td>ROUTE_DIR</td>
-                                <td><input type="text" name="ROUTE_DIR" placeholder="int (ex:1)"></td>
-                            </tr>
-                            <tr>
-                                <td>SDATE</td>
-                                <td><input type="text" name="SDATE" placeholder="YYYYMMDD (ex:20221007)"></td>
-                            </tr>
-                            <tr>
-                                <td>ST_TM</td>
-                                <td><input type="text" name="ST_TM" placeholder="HHMMSS(ex:130000)"></td>
-                            </tr>
-                        </table>
-                        <input type="button" id="getUserMast" class="examBtn" value="예시" onclick="examBtn(this)">
-                        <input type="button" id="getUserMast" class="apiBtn" value="호출" onclick="apiBtn(this)">
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="request-set-zone">
-            <li>request-set-zone</li>
-            <div class="request-set-zone-flex">
-                <div class="setUserMast">
-                    <p>예약 정보 저장</p>
-                    <span>url : setUserMast</span>
-                    <form id="setUserMast" method="post">
-                        <table>
-                            <tr>
-                                <td>REV_DATE</td>
-                                <td><input type="text" name="REV_DATE" placeholder="YYYYMMDD (ex:20221007)"></td>
-                            </tr>
-                            <tr>
-                                <td>REV_TM</td>
-                                <td><input type="text" name="REV_TM" placeholder="HHMMSS(ex:130000)"></td>
-                            </tr>
-                            <tr>
-                                <td>SDATE</td>
-                                <td><input type="text" name="SDATE" placeholder="YYYYMMDD (ex:20221007)"></td>
-                            </tr>
-                            <tr>
-                                <td>ST_TM</td>
-                                <td><input type="text" name="ST_TM" placeholder="HHMMSS(ex:140000)"></td>
-                            </tr>
-                            <tr>
-                                <td>AREA_NM</td>
-                                <td><input type="text" name="AREA_NM" placeholder="String (ex:양산시)"></td>
-                            </tr>
-                            <tr>
-                                <td>AREA_CD</td>
-                                <td><input type="text" name="AREA_CD" placeholder="String (ex:4833000000)"></td>
-                            </tr>
-                            <tr>
-                                <td>RUN_AREA_NM</td>
-                                <td><input type="text" name="RUN_AREA_NM" placeholder="String (ex:어곡산단)"></td>
-                            </tr>
-                            <tr>
-                                <td>RUN_AREA_CD</td>
-                                <td><input type="text" name="RUN_AREA_CD" placeholder="String (ex:1)"></td>
-                            </tr>
-                            <tr>
-                                <td>RUN_ORDER</td>
-                                <td><input type="text" name="RUN_ORDER" placeholder="String (ex:6)"></td>
-                            </tr>
-                            <tr>
-                                <td>ROUTE_ID</td>
-                                <td><input type="text" name="ROUTE_ID" placeholder="String (ex:48421050)"></td>
-                            </tr>
-                            <tr>
-                                <td>ROUTE_NM</td>
-                                <td><input type="text" name="ROUTE_NM" placeholder="STring (ex:도시형5(어곡산단))"></td>
-                            </tr>
-                            <tr>
-                                <td>ROUTE_NMA</td>
-                                <td><input type="text" name="ROUTE_NMA" placeholder="String (ex:도시형5(어곡산업관리공단방향))"></td>
-                            </tr>
-                            <tr>
-                                <td>ROUTE_DIR</td>
-                                <td><input type="text" name="ROUTE_DIR" placeholder="String (ex:1)"></td>
-                            </tr>
-                            <tr>
-                                <td>PLAT_NUM</td>
-                                <td><input type="text" name="PLAT_NUM" placeholder="String (ex:경남11가 1111)"></td>
-                            </tr>
-                            <tr>
-                                <td>STTN_IN_NM</td>
-                                <td><input type="text" name="STTN_IN_NM" placeholder="String (ex:어곡사거리)"></td>
-                            </tr>
-                            <tr>
-                                <td>STTN_OUT_NM</td>
-                                <td><input type="text" name="STTN_OUT_NM" placeholder="String (ex:아워홈)"></td>
-                            </tr>
-                            <tr>
-                                <td>STTN_IN_ID</td>
-                                <td><input type="text" name="STTN_IN_ID" placeholder="String (ex:3426)"></td>
-                            </tr>
-                            <tr>
-                                <td>STTN_OUT_ID</td>
-                                <td><input type="text" name="STTN_OUT_ID" placeholder="String (ex:7022)"></td>
-                            </tr>
-                            <tr>
-                                <td>MAX_SEAT</td>
-                                <td><input type="text" name="MAX_SEAT" placeholder="int (ex:16)"></td>
-                            </tr>
-                            <tr>
-                                <td>TOTAL_DIST</td>
-                                <td><input type="text" name="TOTAL_DIST" placeholder="int (ex:932)"></td>
-                            </tr>
-                            <tr>
-                                <td>TOTAL_TM</td>
-                                <td><input type="text" name="TOTAL_TM" placeholder="int (ex:222)"></td>
-                            </tr>
-                            <tr>
-                                <td>USER_CNT</td>
-                                <td><input type="text" name="USER_CNT" placeholder="int (ex:2)"></td>
-                            </tr>
-                            <tr>
-                                <td>USER_NM</td>
-                                <td><input type="text" name="USER_NM" placeholder="String (ex:김다라)"></td>
-                            </tr>
-                            <tr>
-                                <td>USER_PHONE</td>
-                                <td><input type="text" name="USER_PHONE" placeholder="String (ex:01011112222)"></td>
-                            </tr>
-                            <tr>
-                                <td>REV_TYPE</td>
-                                <td><input type="text" name="REV_TYPE" placeholder="String (ex:early)"></td>
-                            </tr>
-                        </table>
-                        <input type="button" id="setUserMast" class="examBtn" value="예시" onclick="examBtn(this)">
-                        <input type="button" id="setUserMast" class="apiBtn" value="호출" onclick="apiBtn(this)">
-                    </form>
-                </div>
-                <div class="setHist" style="display: none">
-                    <p>운행 정보 저장</p>
-                    <span>url : setHist</span>
-                    <form id="setHist" method="post">
-                        <table>
-                            <tr>
-                                <td>SDATE</td>
-                                <td><input type="text" name="SDATE" placeholder="YYYYMMDD (ex:20221007)"></td>
-                            </tr>
-                            <tr>
-                                <td>ST_TM</td>
-                                <td><input type="text" name="ST_TM" placeholder="HHMMSS(ex:130000)"></td>
-                            </tr>
-                            <tr>
-                                <td>AREA_NM</td>
-                                <td><input type="text" name="AREA_NM" placeholder="String (ex:양산시)"></td>
-                            </tr>
-                            <tr>
-                                <td>AREA_CD</td>
-                                <td><input type="text" name="AREA_CD" placeholder="String (ex:4833000000)"></td>
-                            </tr>
-                            <tr>
-                                <td>RUN_AREA_NM</td>
-                                <td><input type="text" name="RUN_AREA_NM" placeholder="String (ex:어곡산단)"></td>
-                            </tr>
-                            <tr>
-                                <td>RUN_AREA_CD</td>
-                                <td><input type="text" name="RUN_AREA_CD" placeholder="String (ex:1)"></td>
-                            </tr>
-                            <tr>
-                                <td>RUN_ORDER</td>
-                                <td><input type="text" name="RUN_ORDER" placeholder="String (ex:6)"></td>
-                            </tr>
-                            <tr>
-                                <td>ROUTE_ID</td>
-                                <td><input type="text" name="ROUTE_ID" placeholder="String (ex:48421050)"></td>
-                            </tr>
-                            <tr>
-                                <td>ROUTE_NM</td>
-                                <td><input type="text" name="ROUTE_NM" placeholder="String (ex:도시형5(어곡산단))"></td>
-                            </tr>
-                            <tr>
-                                <td>ROUTE_NMA</td>
-                                <td><input type="text" name="ROUTE_NMA" placeholder="String (ex:도시형5(어곡산업관리공단방향))"></td>
-                            </tr>
-                            <tr>
-                                <td>ROUTE_DIR</td>
-                                <td><input type="text" name="ROUTE_DIR" placeholder="String (ex:1)"></td>
-                            </tr>
-                            <tr>
-                                <td>PLAT_NUM</td>
-                                <td><input type="text" name="PLAT_NUM" placeholder="String (ex:경남11가 1111)"></td>
-                            </tr>
-                            <tr>
-                                <td>DRIVER_NM</td>
-                                <td><input type="text" name="DRIVER_NM" placeholder="String (ex:홍길동1)"></td>
-                            </tr>
-                            <tr>
-                                <td>F_NODE_NM</td>
-                                <td><input type="text" name="F_NODE_NM" placeholder="String (ex:어곡사거리)"></td>
-                            </tr>
-                            <tr>
-                                <td>T_NODE_NM</td>
-                                <td><input type="text" name="T_NODE_NM" placeholder="String (ex:어곡사거리)"></td>
-                            </tr>
-                            <tr>
-                                <td>F_NODE_ID</td>
-                                <td><input type="text" name="F_NODE_ID" placeholder="String (ex:4895000002)"></td>
-                            </tr>
-                            <tr>
-                                <td>T_NODE_ID</td>
-                                <td><input type="text" name="T_NODE_ID" placeholder="String (ex:4895000001)"></td>
-                            </tr>
-                            <tr>
-                                <td>TOTAL_DIST</td>
-                                <td><input type="text" name="TOTAL_DIST" placeholder="int (ex:987)"></td>
-                            </tr>
-                            <tr>
-                                <td>TOTAL_TM</td>
-                                <td><input type="text" name="TOTAL_TM" placeholder="int (ex:222)"></td>
-                            </tr>
-                            <tr>
-                                <td>USER_CNT</td>
-                                <td><input type="text" name="USER_CNT" placeholder="int (ex:6)"></td>
-                            </tr>
-                            <tr>
-                                <td>BOARDING_STATUS</td>
-                                <td><input type="text" name="BOARDING_STATUS" placeholder="String (ex:N)"></td>
-                            </tr>
-                        </table>
-                        <input type="button" id="setHist" class="examBtn" value="예시" onclick="examBtn(this)">
-                        <input type="button" id="setHist" class="apiBtn" value="호출" onclick="apiBtn(this)">
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="response-zone">
-            <li>response-zone</li>
-            <textarea id = "res"></textarea>
-        </div>
-    </div>
+	<div class="html-area">
+		<div class="title-area">
+			<div id="title">농어촌 <span id="title-span">MaaS</span> 평가 시뮬레이션</div>
+			<table border="1">
+				<tr>
+					<td>배차시각</td>
+					<td>
+						<select>
+							<option value="10">10</option>
+						</select>
+						시
+					</td>
+				</tr>
+				<tr>
+					<td>노선명</td>
+					<td>
+						<select id="routeId">
+							<option value="2">도시형_6번(석계한성아파트-아크)</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+			<button id="getSttnBtn"  class="btns" onclick="fnGetSttnBtn();">노선검색</button>
+		</div>
+		<div class ="button-area">
+			<button id="addBtn"  class="btns" onclick="fnAddBtn();">추가</button>
+			<button id="submitBtn"  class="btns" onclick="fnClickBtn();">제출</button>
+		</div>
+		<div class="param-area">
+			<table border="1">
+				<tbody>
+					  <tr>
+				        <td rowspan='3' id="user0">1번 탑승객</td>
+				        <td>출발 정류장</td>
+				        <td colspan='2' ><input type="text"  id=beg0 ></td>
+				    </tr>
+				    <tr>
+				        <td>도착 정류장</td>
+				        <td colspan='2' ><input type="text"  id=end0 ></td>
+				    </tr>
+				    <tr>
+				        <td>예약 시간</td>
+				        <td><select class="hh" id="hh0"></select> 시</td>
+				        <td><select class="mm" id="mm0"></select> 분</td>
+				    </tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="result-area">
+			<div class="result-area-title">
+				<div>조회 결과</div>
+				<form action="/excelDownload" method="post">
+				    <input type="hidden" id="scheNo" name="scheNo">
+				    <button type="submit" id="excelBtn" class="btns">결과표 다운</button>
+				</form>
+				<button id="resultBtn"  class="btns" onclick="fnShowResult();">결과표 보기</button>
+			</div>
+			<div class="result-area-sum"></div>
+			<div class="user-area"></div>
+		</div>
+	</div>
+	<div class="map-area">
+		<div id="map" class="map"></div>
+		<div id="popup" class="ol-popup"></div>
+	</div>
+	<div id="modalWrap">
+	  <div id="modalContent">
+	    <div id="modalBody">
+	    	<div>
+		      <span id="closeBtn">&times;</span>
+		     </div>
+	      	<table class="tg" id="resultTable">
+				<thead>
+				  <tr>
+					<th class="tg-0pky">순서</th>
+					<th class="tg-0pky">배차시간</th>
+					<th class="tg-0pky">출발정류장명</th>
+					<th class="tg-0pky">도착정류장명</th>
+					<th class="tg-0pky">예약시간</th>
+					<th class="tg-0pky">기존탑승시각</th>
+					<th class="tg-0pky">경로탐색<br>탑승시각</th>
+					<th class="tg-0pky">대기시간</th>
+					<th class="tg-0pky">기존<br>소요시간</th>
+					<th class="tg-0pky">경로탐색<br>소요시간</th>
+					<th class="tg-0pky">기존<br>이동거리</th>
+					<th class="tg-0pky">경로탐색<br>이동거리</th>
+					<th class="tg-0pky">기존노선<br>총소요시간</th>
+					<th class="tg-0pky">경로탐색<br>총소요시간</th>
+					<th class="tg-0pky">기존노선<br>총이동거리</th>
+					<th class="tg-0pky">경로탐색<br>총이동거리</th>
+				  </tr>
+				</thead>
+				<tbody class="modal-tbody">
+				</tbody>
+			</table>
+	    </div>
+	  </div>
+	</div>
+	<div id = "mapLegend">
+		<div>지도 범례</div>
+		<div>
+			<div>
+				<input type="checkbox" id = "orderMaster_link" class="legendCheck">
+				<div id = "orderMaster_link_css"></div>
+				<div>기존 노선</div>
+			</div>
+			<div>
+				<input type="checkbox" id = "order10_link" class="legendCheck">
+				<div id = "order10_link_css"></div>
+				<div>10시 배차 노선</div>
+			</div>
+			<div>
+				<input type="checkbox" id = "order11_link" class="legendCheck">
+				<div id = "order11_link_css"></div>
+				<div>11시 배차 노선</div>
+			</div>
+			<div><hr></div>
+			<div>
+				<input type="checkbox" id = "order10_node" class="legendCheck">
+				<div>10시 배차 정류장</div>
+			</div>
+			<div>
+				<input type="checkbox" id = "order11_node" class="legendCheck">
+				<div>11시 배차 정류장</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>

@@ -1,4 +1,4 @@
-package ybs.api.boot.service;
+package ybs.api.boot.org.service;
 
 import lombok.Data;
 
@@ -49,5 +49,6 @@ public class xmlVO {
     private String facilityType;
     private String linkId;
     private int costdstn;
+    private int sttnSeq;
 
 }
